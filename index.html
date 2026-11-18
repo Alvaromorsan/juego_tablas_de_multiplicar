@@ -458,6 +458,287 @@
         }
 
         /**
+         * NAVEGACIÓN ENTRE PANTALLAS
+         */
+        function showScreen(screenId) {
+            const screens = ['screen-start', 'screen-game', 'screen-celebration', 'screen-victory'];
+            screens.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(screenId);
+            if (target) target.classList.remove('hidden');
+        }
+
+        function confirmExit() {
+            stopTimer();
+            openModal(
+                '🏠',
+                '¿Volver al inicio?',
+                'Si sales ahora perderás el progreso de la fase actual.',
+                [
+                    {
+                        text: 'Seguir jugando',
+                        class: 'bg-slate-200 text-slate-800',
+                        action: () => {
+                            closeModal();
+                            startTimer();
+                        }
+                    },
+                    {
+                        text: 'Salir al inicio',
+                        class: 'bg-rose-500 text-white',
+                        action: () => {
+                            closeModal();
+                            resetToHome();
+                        }
+                    }
+                ]
+            );
+        }
+
+        function resetToHome() {
+            stopTimer();
+            document.getElementById('secretCodeInput').value = '';
+            document.getElementById('codeErrorMsg').classList.add('hidden');
+            showScreen('screen-start');
+        }
+
+        /**
+         * VALIDACIÓN DE CÓDIGO SECRETO DE 4 CIFRAS
+         */
+        function checkSecretCode() {
+            const input = document.getElementById('secretCodeInput').value.trim();
+            const errorMsg = document.getElementById('codeErrorMsg');
+            errorMsg.classList.add('hidden');
+
+            let targetPhase = null;
+            for (const [phaseNum, code] of Object.entries(PHASE_CODES)) {
+                if (input === code) {
+                    targetPhase = parseInt(phaseNum, 10);
+                    break;
+                }
+            }
+
+            if (targetPhase) {
+                sfxCorrect();
+                startPhase(targetPhase);
+            } else {
+                sfxWrong();
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        /**
+         * INICIO DE CADA FASE Y PREPARACIÓN DE PREGUNTAS
+         */
+        function startPhase(phaseNum) {
+            stopTimer();
+            state.phase = phaseNum;
+            state.currentTable = 1;
+            state.stepIndex = 0;
+            state.lives = 3;
+            state.isLocked = false;
+
+            const phaseNames = {
+                1: 'Fase 1: En orden (1 al 9)',
+                2: 'Fase 2: Hacia atrás (×10 a ×1)',
+                3: 'Fase 3: Desordenadas',
+                4: 'Fase 4: Escribe el número',
+                5: 'Fase 5: Peonza Diabólica'
+            };
+
+            document.getElementById('phaseBadge').textContent = phaseNames[phaseNum] || `Fase ${phaseNum}`;
+
+            // Configurar visibilidad de vidas (Fases 4 y 5)
+            const livesContainer = document.getElementById('livesContainer');
+            if (phaseNum >= 4) {
+                livesContainer.classList.remove('hidden');
+                updateHeartsUI();
+            } else {
+                livesContainer.classList.add('hidden');
+            }
+
+            // Configurar visibilidad de Arena del Jefe Final (Fase 5)
+            const bossArena = document.getElementById('bossArena');
+            if (phaseNum === 5) {
+                bossArena.classList.remove('hidden');
+                document.getElementById('bossTaunt').textContent = '"¡Gira que te gira! ¡Nunca acertarás mis 25 multiplicaciones!"';
+                generateBossQuestions();
+            } else {
+                bossArena.classList.add('hidden');
+                prepareTableOrder();
+            }
+
+            showScreen('screen-game');
+            loadQuestion();
+        }
+
+        function prepareTableOrder() {
+            state.stepIndex = 0;
+            const base = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            if (state.phase === 1 || state.phase === 4) {
+                state.multipliersOrder = [...base];
+            } else if (state.phase === 2) {
+                state.multipliersOrder = [...base].reverse();
+            } else if (state.phase === 3) {
+                state.multipliersOrder = shuffleArray([...base]);
+            }
+        }
+
+        function generateBossQuestions() {
+            state.bossIndex = 0;
+            const pool = [];
+            for (let a = 1; a <= 9; a++) {
+                for (let b = 1; b <= 10; b++) {
+                    pool.push({ a, b });
+                }
+            }
+            shuffleArray(pool);
+            state.bossQuestions = pool.slice(0, 25);
+        }
+
+        function loadQuestion() {
+            state.isLocked = false;
+            state.typedInput = "";
+            document.getElementById('feedbackBanner').innerHTML = '';
+
+            if (state.phase <= 4) {
+                state.currentA = state.currentTable;
+                state.currentB = state.multipliersOrder[state.stepIndex];
+                state.correctAnswer = state.currentA * state.currentB;
+
+                document.getElementById('tableProgressText').textContent =
+                    `Tabla del ${state.currentTable} (${state.stepIndex + 1} / 10)`;
+
+                const totalSteps = 90;
+                const doneSteps = (state.currentTable - 1) * 10 + state.stepIndex;
+                const pct = Math.max(4, Math.round((doneSteps / totalSteps) * 100));
+                document.getElementById('overallProgressBar').style.width = `${pct}%`;
+            } else {
+                const q = state.bossQuestions[state.bossIndex];
+                state.currentA = q.a;
+                state.currentB = q.b;
+                state.correctAnswer = q.a * q.b;
+
+                const remaining = 25 - state.bossIndex;
+                document.getElementById('tableProgressText').textContent =
+                    `Duelo Final: Pregunta ${state.bossIndex + 1} / 25`;
+                document.getElementById('bossHpText').textContent = `Energía: ${remaining} / 25`;
+                document.getElementById('bossHpBar').style.width = `${(remaining / 25) * 100}%`;
+
+                const pct = Math.max(4, Math.round((state.bossIndex / 25) * 100));
+                document.getElementById('overallProgressBar').style.width = `${pct}%`;
+            }
+
+            document.getElementById('questionPrompt').innerHTML =
+                `${state.currentA} × ${state.currentB} = <span class="text-indigo-600">?</span>`;
+
+            // Mostrar 6 opciones (Fases 1-3) o teclado numérico (Fases 4-5)
+            const optionsGrid = document.getElementById('optionsGrid');
+            const keypadArea = document.getElementById('keypadArea');
+
+            if (state.phase <= 3) {
+                optionsGrid.classList.remove('hidden');
+                keypadArea.classList.add('hidden');
+                renderOptions();
+            } else {
+                optionsGrid.classList.add('hidden');
+                keypadArea.classList.remove('hidden');
+                updateTypedBox();
+            }
+
+            startTimer();
+        }
+
+        function renderOptions() {
+            const correct = state.correctAnswer;
+            const choices = new Set([correct]);
+
+            // Generar distractores cercanos y plausibles de las tablas
+            while (choices.size < 6) {
+                const offset = Math.floor(Math.random() * 15) - 7;
+                let candidate = correct + offset;
+                if (candidate <= 0 || candidate === correct) {
+                    candidate = (Math.floor(Math.random() * 9) + 1) * (Math.floor(Math.random() * 10) + 1);
+                }
+                if (candidate > 0 && candidate !== correct) {
+                    choices.add(candidate);
+                }
+            }
+
+            const shuffledChoices = shuffleArray(Array.from(choices));
+            const colors = [
+                'bg-blue-500 hover:bg-blue-600 text-white',
+                'bg-purple-500 hover:bg-purple-600 text-white',
+                'bg-pink-500 hover:bg-pink-600 text-white',
+                'bg-amber-500 hover:bg-amber-600 text-white',
+                'bg-teal-500 hover:bg-teal-600 text-white',
+                'bg-indigo-500 hover:bg-indigo-600 text-white'
+            ];
+
+            const grid = document.getElementById('optionsGrid');
+            grid.innerHTML = '';
+            shuffledChoices.forEach((val, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `btn-3d font-bold text-2xl sm:text-3xl py-4 sm:py-5 rounded-2xl ${colors[idx % colors.length]}`;
+                btn.textContent = val;
+                btn.onclick = () => handleAnswer(val);
+                grid.appendChild(btn);
+            });
+        }
+
+        /**
+         * CONTROLES DEL TECLADO NUMÉRICO (FASES 4 Y 5)
+         */
+        function pressKey(digit) {
+            if (state.isLocked) return;
+            if (state.typedInput.length < 3) {
+                state.typedInput += digit;
+                updateTypedBox();
+                playTone(440, 'sine', 0.05, 0);
+            }
+        }
+
+        function clearKey() {
+            if (state.isLocked) return;
+            state.typedInput = state.typedInput.slice(0, -1);
+            updateTypedBox();
+            playTone(300, 'sine', 0.05, 0);
+        }
+
+        function updateTypedBox() {
+            const box = document.getElementById('typedAnswerBox');
+            box.textContent = state.typedInput.length > 0 ? state.typedInput : '_';
+        }
+
+        function submitTypedAnswer() {
+            if (state.isLocked) return;
+            if (state.typedInput.length === 0) {
+                const box = document.getElementById('typedAnswerBox');
+                box.classList.add('animate-shake');
+                setTimeout(() => box.classList.remove('animate-shake'), 400);
+                return;
+            }
+            const numericVal = parseInt(state.typedInput, 10);
+            handleAnswer(numericVal);
+        }
+
+        // Soporte opcional para teclado físico en ordenador
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('screen-game').classList.contains('hidden')) return;
+            if (state.phase < 4 || state.isLocked) return;
+
+            if (e.key >= '0' && e.key <= '9') {
+                pressKey(e.key);
+            } else if (e.key === 'Backspace') {
+                clearKey();
+            } else if (e.key === 'Enter') {
+                submitTypedAnswer();
+            }
+        });
+
+        /**
          * TEMPORIZADOR DE 15 SEGUNDOS POR PREGUNTA
          */
         function startTimer() {
