@@ -4,23 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Misión Tablas - CEIP Antonio Machado</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* RESET Y ESTILOS AUTÓNOMOS (SIN DEPENDENCIAS EXTERNAS PARA GITHUB PAGES) */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: 'Fredoka', sans-serif;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             touch-action: manipulation;
             user-select: none;
             -webkit-user-select: none;
             overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: #1e293b;
+            background-color: #f0f9ff;
+            background-image: radial-gradient(#bae6fd 2px, transparent 2px);
+            background-size: 28px 28px;
         }
 
-        /* Animaciones divertidas para personajes, bailes y la peonza */
+        .hidden { display: none !important; }
+
+        /* CABECERA */
+        header {
+            background: linear-gradient(90deg, #2563eb, #4f46e5, #7c3aed);
+            color: #ffffff;
+            padding: 12px 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+        }
+
+        .header-inner {
+            max-width: 560px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-title-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-icon { font-size: 28px; }
+        .header-title { font-weight: 800; font-size: 18px; line-height: 1.2; }
+        .header-sub { font-size: 13px; color: #dbeafe; font-weight: 600; }
+
+        .sound-btn {
+            background: rgba(255, 255, 255, 0.22);
+            border: none;
+            color: white;
+            padding: 10px 12px;
+            border-radius: 16px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        main {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 560px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
+            padding: 24px 20px;
+            border: 4px solid #e0e7ff;
+            text-align: center;
+        }
+
+        /* ANIMACIONES */
         @keyframes dance {
             0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
-            25% { transform: translateY(-18px) rotate(-12deg) scale(1.1); }
+            25% { transform: translateY(-16px) rotate(-12deg) scale(1.1); }
             50% { transform: translateY(0) rotate(0deg) scale(0.95); }
-            75% { transform: translateY(-18px) rotate(12deg) scale(1.1); }
+            75% { transform: translateY(-16px) rotate(12deg) scale(1.1); }
         }
 
         @keyframes spin-evil {
@@ -31,9 +107,9 @@
 
         @keyframes spin-defeated {
             0% { transform: rotate(0deg) translateY(0); }
-            30% { transform: rotate(720deg) translateY(-40px) scale(1.2); }
-            70% { transform: rotate(1080deg) translateY(20px) scale(0.8); }
-            100% { transform: rotate(1120deg) translateY(10px) rotateZ(45deg) scale(0.85); }
+            30% { transform: rotate(720deg) translateY(-30px) scale(1.15); }
+            70% { transform: rotate(1080deg) translateY(15px) scale(0.85); }
+            100% { transform: rotate(1120deg) translateY(8px) scale(0.9); }
         }
 
         @keyframes shake {
@@ -43,1070 +119,1141 @@
         }
 
         @keyframes pop-in {
-            0% { transform: scale(0.7); opacity: 0; }
-            80% { transform: scale(1.05); opacity: 1; }
+            0% { transform: scale(0.85); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
 
-        .animate-dance {
-            animation: dance 0.8s infinite ease-in-out;
-        }
+        .animate-dance { animation: dance 0.8s infinite ease-in-out; display: inline-block; }
+        .animate-evil-top { animation: spin-evil 1.2s infinite linear; display: inline-block; }
+        .animate-defeated-top { animation: spin-defeated 2s forwards ease-out; display: inline-block; }
+        .animate-shake { animation: shake 0.4s ease-in-out; }
+        .animate-pop { animation: pop-in 0.3s ease-out forwards; }
 
-        .animate-evil-top {
-            animation: spin-evil 1.2s infinite linear;
-        }
-
-        .animate-defeated-top {
-            animation: spin-defeated 2s forwards ease-out;
-        }
-
-        .animate-shake {
-            animation: shake 0.4s ease-in-out;
-        }
-
-        .animate-pop {
-            animation: pop-in 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        /* Estilo táctil 3D para botones */
+        /* BOTONES TÁCTILES 3D */
         .btn-3d {
-            transition: all 0.1s ease;
-            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+            border: none;
+            cursor: pointer;
+            font-weight: 800;
+            border-radius: 18px;
+            transition: transform 0.08s ease;
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.22);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .btn-3d:active {
             transform: translateY(4px);
-            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.22);
         }
 
-        /* Fondo con patrón sutil */
-        .bg-classroom {
-            background-color: #f0f9ff;
-            background-image: radial-gradient(#bae6fd 2px, transparent 2px);
-            background-size: 28px 28px;
+        .badge-amber {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            font-weight: 800;
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        h2 { font-size: 26px; font-weight: 800; margin-bottom: 8px; color: #0f172a; }
+        .intro-text { color: #475569; font-size: 15px; line-height: 1.5; margin-bottom: 22px; }
+
+        .btn-start-main {
+            width: 100%;
+            background: linear-gradient(90deg, #10b981, #16a34a);
+            color: white;
+            font-size: 21px;
+            padding: 16px 20px;
+            margin-bottom: 22px;
+        }
+
+        /* MAPA DE 5 FASES */
+        .phases-map {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin-bottom: 22px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+        .phase-pill {
+            padding: 8px 4px;
+            border-radius: 14px;
+            border: 2px solid;
+        }
+        .p1 { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+        .p2 { background: #faf5ff; border-color: #e9d5ff; color: #7e22ce; }
+        .p3 { background: #fdf2f8; border-color: #fbcfe8; color: #be185d; }
+        .p4 { background: #fff7ed; border-color: #fed7aa; color: #c2410c; }
+        .p5 { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
+
+        /* CAJA CÓDIGO SECRETO */
+        .code-box {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 20px;
+            border: 2px dashed #cbd5e1;
+        }
+        .code-box-title { font-size: 14px; font-weight: 800; color: #334155; margin-bottom: 12px; }
+        .code-input-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .code-input {
+            width: 160px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            padding: 10px 14px;
+            border-radius: 14px;
+            border: 2px solid #c7d2fe;
+            outline: none;
+        }
+        .code-input:focus { border-color: #4f46e5; }
+        .btn-unlock {
+            background: #4f46e5;
+            color: white;
+            padding: 12px 20px;
+            font-size: 16px;
+        }
+        .error-msg { color: #dc2626; font-size: 14px; font-weight: 800; margin-top: 10px; }
+
+        /* ÁREA DE JUEGO */
+        .game-top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #f1f5f9;
+            text-align: left;
+        }
+        .phase-badge {
+            background: #e0e7ff;
+            color: #3730a3;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            display: inline-block;
+        }
+        .table-progress { font-size: 16px; font-weight: 800; color: #334155; margin-top: 4px; }
+
+        .lives-box {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #fef2f2;
+            padding: 6px 12px;
+            border-radius: 14px;
+            border: 1px solid #fecaca;
+            font-size: 14px;
+            font-weight: 800;
+            color: #b91c1c;
+        }
+
+        .btn-home-small {
+            background: #f1f5f9;
+            border: none;
+            color: #475569;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        /* BARRAS DE PROGRESO Y TIEMPO */
+        .progress-track {
+            width: 100%;
+            background: #f1f5f9;
+            height: 10px;
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+        .progress-fill {
+            background: #6366f1;
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .timer-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            color: #64748b;
+        }
+        .timer-track {
+            width: 100%;
+            background: #e2e8f0;
+            height: 16px;
+            border-radius: 999px;
+            overflow: hidden;
+            padding: 2px;
+            margin-bottom: 16px;
+        }
+        .timer-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: #10b981;
+            transition: width 0.1s linear;
+        }
+
+        /* ARENA PEONZA DIABÓLICA */
+        .boss-arena {
+            background: linear-gradient(180deg, #0f172a, #3b0764);
+            color: white;
+            border-radius: 20px;
+            padding: 14px;
+            margin-bottom: 16px;
+            border: 2px solid #a855f7;
+        }
+        .boss-top-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .boss-hp-track {
+            width: 100%;
+            background: #334155;
+            height: 10px;
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .boss-hp-fill {
+            background: linear-gradient(90deg, #ef4444, #f59e0b);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        .boss-taunt { font-size: 13px; color: #e9d5ff; font-weight: 600; margin-top: 6px; }
+
+        /* TARJETA PREGUNTA */
+        .question-card {
+            background: linear-gradient(135deg, #eef2ff, #eff6ff);
+            border: 2px solid #c7d2fe;
+            border-radius: 22px;
+            padding: 22px 16px;
+            margin-bottom: 18px;
+        }
+        .question-text { font-size: 46px; font-weight: 900; color: #0f172a; }
+        .feedback-line { margin-top: 8px; min-height: 22px; font-size: 15px; font-weight: 800; }
+
+        /* GRID 6 OPCIONES */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        @media (min-width: 480px) {
+            .options-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        .opt-btn {
+            color: white;
+            font-size: 28px;
+            padding: 16px 10px;
+        }
+        .c-blue { background: #3b82f6; }
+        .c-purple { background: #9333ea; }
+        .c-pink { background: #ec4899; }
+        .c-amber { background: #f59e0b; }
+        .c-teal { background: #14b8a6; }
+        .c-indigo { background: #6366f1; }
+
+        /* TECLADO NUMÉRICO */
+        .typed-visor {
+            width: 180px;
+            height: 56px;
+            margin: 0 auto 14px auto;
+            background: #f1f5f9;
+            border: 4px solid #6366f1;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            font-weight: 900;
+            color: #4338ca;
+        }
+        .keypad-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-width: 340px;
+            margin: 0 auto;
+        }
+        .key-btn {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-size: 24px;
+            padding: 14px 8px;
+        }
+        .key-del { background: #ffe4e6; color: #be123c; font-size: 17px; }
+        .key-ok { background: #10b981; color: white; font-size: 17px; }
+
+        /* CELEBRACIÓN Y CÓDIGO */
+        .dance-stage {
+            background: #fffbeb;
+            border: 2px solid #fde68a;
+            border-radius: 20px;
+            padding: 22px 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            font-size: 48px;
+        }
+        .unlocked-card {
+            background: #4f46e5;
+            color: white;
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+        .unlocked-code {
+            font-size: 44px;
+            font-weight: 900;
+            letter-spacing: 6px;
+            color: #fcd34d;
+            margin: 6px 0;
+        }
+
+        /* MODAL */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 100;
+        }
+        .modal-card {
+            background: white;
+            border-radius: 28px;
+            max-width: 380px;
+            width: 100%;
+            padding: 24px;
+            text-align: center;
+            border: 4px solid #e0e7ff;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+        }
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 12px;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
         }
     </style>
 </head>
-<body class="bg-classroom min-h-screen flex flex-col justify-between text-slate-800">
+<body>
 
     <!-- CABECERA DEL COLEGIO -->
-    <header class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-3 px-4 shadow-lg rounded-b-3xl">
-        <div class="max-w-xl mx-auto flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <span class="text-2xl sm:text-3xl">🏫</span>
+    <header>
+        <div class="header-inner">
+            <div class="header-title-group">
+                <span class="header-icon">🏫</span>
                 <div>
-                    <h1 class="font-bold text-base sm:text-xl leading-tight tracking-wide">CEIP Antonio Machado</h1>
-                    <p class="text-xs sm:text-sm text-blue-100 font-medium">Misión: Tablas del 1 al 9</p>
+                    <div class="header-title">CEIP Antonio Machado</div>
+                    <div class="header-sub">Misión: Tablas del 1 al 9</div>
                 </div>
             </div>
-            <button id="soundToggle" onclick="toggleSound()" class="bg-white/20 hover:bg-white/30 p-2.5 rounded-2xl text-xl transition" title="Activar/Desactivar Sonido">
-                🔊
-            </button>
+            <button id="soundToggle" class="sound-btn" title="Activar/Desactivar Sonido">🔊</button>
         </div>
     </header>
 
     <!-- CONTENEDOR PRINCIPAL -->
-    <main class="flex-grow flex items-center justify-center p-3 sm:p-5">
-        <div class="w-full max-w-xl">
+    <main>
+        <div class="container">
 
-            <!-- PANTALLA 1: INICIO Y SELECCIÓN DE FASE / CÓDIGO -->
-            <section id="screen-start" class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 border-4 border-indigo-100 animate-pop text-center">
-                <div class="inline-block bg-amber-100 text-amber-800 font-bold px-4 py-1.5 rounded-full text-sm mb-3">
-                    🚀 ¡Aventura Matemática!
-                </div>
-                <h2 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">¿Listo para superar el reto?</h2>
-                <p class="text-slate-600 text-sm sm:text-base mb-6">
+            <!-- PANTALLA 1: INICIO -->
+            <section id="screen-start" class="card animate-pop">
+                <div class="badge-amber">🚀 ¡Aventura Matemática!</div>
+                <h2>¿Listo para superar el reto?</h2>
+                <p class="intro-text">
                     Supera las 5 fases, consigue los <strong>códigos secretos</strong> y derrota a la <strong>Peonza Diabólica</strong>. ¡Tienes 15 segundos por pregunta!
                 </p>
 
-                <!-- Botón empezar desde el principio -->
-                <button onclick="startPhase(1)" class="w-full btn-3d bg-gradient-to-r from-emerald-400 to-green-500 hover:from-emerald-500 hover:to-green-600 text-white font-bold text-xl sm:text-2xl py-4 px-6 rounded-2xl mb-6 flex items-center justify-center gap-3">
+                <button id="btnStartPhase1" class="btn-3d btn-start-main">
                     <span>▶️</span> Empezar en la Fase 1
                 </button>
 
-                <!-- Mapa rápido de fases -->
-                <div class="grid grid-cols-5 gap-1.5 sm:gap-2 mb-6 text-xs font-bold">
-                    <div class="bg-blue-50 border-2 border-blue-200 p-2 rounded-xl text-blue-700">
-                        <div class="text-lg">1️⃣</div>Orden
-                    </div>
-                    <div class="bg-purple-50 border-2 border-purple-200 p-2 rounded-xl text-purple-700">
-                        <div class="text-lg">2️⃣</div>Al revés
-                    </div>
-                    <div class="bg-pink-50 border-2 border-pink-200 p-2 rounded-xl text-pink-700">
-                        <div class="text-lg">3️⃣</div>Mezcla
-                    </div>
-                    <div class="bg-orange-50 border-2 border-orange-200 p-2 rounded-xl text-orange-700">
-                        <div class="text-lg">4️⃣</div>Escribir
-                    </div>
-                    <div class="bg-red-50 border-2 border-red-200 p-2 rounded-xl text-red-700">
-                        <div class="text-lg">🌀</div>Peonza
-                    </div>
+                <div class="phases-map">
+                    <div class="phase-pill p1"><div style="font-size:18px">1️⃣</div>Orden</div>
+                    <div class="phase-pill p2"><div style="font-size:18px">2️⃣</div>Al revés</div>
+                    <div class="phase-pill p3"><div style="font-size:18px">3️⃣</div>Mezcla</div>
+                    <div class="phase-pill p4"><div style="font-size:18px">4️⃣</div>Escribir</div>
+                    <div class="phase-pill p5"><div style="font-size:18px">🌀</div>Peonza</div>
                 </div>
 
-                <!-- Caja para introducir código secreto de 4 cifras -->
-                <div class="bg-slate-50 p-4 sm:p-5 rounded-2xl border-2 border-dashed border-slate-300">
-                    <p class="text-sm font-bold text-slate-700 mb-3">🔑 ¿Tienes un código secreto de 4 cifras?</p>
-                    <div class="flex flex-col sm:flex-row gap-2 justify-center items-center">
-                        <input id="secretCodeInput" type="tel" maxlength="4" placeholder="Ej: 1234" 
-                            class="w-full sm:w-44 text-center text-2xl font-bold tracking-widest py-3 px-4 rounded-xl border-2 border-indigo-200 focus:border-indigo-500 focus:outline-none bg-white">
-                        <button onclick="checkSecretCode()" class="w-full sm:w-auto btn-3d bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-6 rounded-xl text-base">
-                            Desbloquear Fase
-                        </button>
+                <div class="code-box">
+                    <div class="code-box-title">🔑 ¿Tienes un código secreto de 4 cifras?</div>
+                    <div class="code-input-row">
+                        <input id="secretCodeInput" type="tel" maxlength="4" placeholder="Ej: 2486" class="code-input">
+                        <button id="btnUnlockCode" class="btn-3d btn-unlock">Desbloquear Fase</button>
                     </div>
-                    <p id="codeErrorMsg" class="text-red-500 text-sm font-bold mt-2 hidden">❌ Código incorrecto. ¡Revisa los 4 números!</p>
+                    <p id="codeErrorMsg" class="error-msg hidden">❌ Código incorrecto. ¡Revisa los 4 números!</p>
                 </div>
             </section>
 
-            <!-- PANTALLA 2: ÁREA DE JUEGO -->
-            <section id="screen-game" class="hidden bg-white rounded-3xl shadow-xl p-4 sm:p-6 border-4 border-indigo-100">
-                
-                <!-- Barra superior de estado: Fase, Progreso y Vidas -->
-                <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-3 border-b-2 border-slate-100">
+            <!-- PANTALLA 2: JUEGO -->
+            <section id="screen-game" class="card hidden">
+                <div class="game-top-bar">
                     <div>
-                        <span id="phaseBadge" class="bg-indigo-100 text-indigo-800 font-bold px-3 py-1 rounded-full text-xs sm:text-sm">
-                            Fase 1: En orden
-                        </span>
-                        <div id="tableProgressText" class="text-sm sm:text-base font-bold text-slate-700 mt-1">
-                            Tabla del 1 (1 / 10)
-                        </div>
+                        <span id="phaseBadge" class="phase-badge">Fase 1: En orden</span>
+                        <div id="tableProgressText" class="table-progress">Tabla del 1 (1 / 10)</div>
                     </div>
 
-                    <!-- Vidas (visible en Fase 4 y Fase 5) -->
-                    <div id="livesContainer" class="hidden flex items-center gap-1 bg-red-50 px-3 py-1.5 rounded-2xl border border-red-200">
-                        <span class="text-xs font-bold text-red-700 mr-1">Vidas:</span>
-                        <span id="heartsDisplay" class="text-lg sm:text-xl tracking-wider">❤️❤️❤️</span>
+                    <div id="livesContainer" class="lives-box hidden">
+                        <span>Vidas:</span>
+                        <span id="heartsDisplay">❤️❤️❤️</span>
                     </div>
 
-                    <!-- Botón salir al menú -->
-                    <button onclick="confirmExit()" class="text-slate-400 hover:text-slate-600 font-bold text-sm bg-slate-100 px-3 py-1.5 rounded-xl">
-                        🏠 Inicio
-                    </button>
+                    <button id="btnExitGame" class="btn-home-small">🏠 Inicio</button>
                 </div>
 
-                <!-- Barra de progreso general de la fase -->
-                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-4">
-                    <div id="overallProgressBar" class="bg-indigo-500 h-full transition-all duration-300" style="width: 10%"></div>
+                <div class="progress-track">
+                    <div id="overallProgressBar" class="progress-fill" style="width: 10%"></div>
                 </div>
 
-                <!-- RELOJ / BARRA DE TIEMPO (15 SEGUNDOS) -->
-                <div class="mb-4">
-                    <div class="flex justify-between items-center text-xs sm:text-sm font-bold mb-1">
-                        <span class="text-slate-500 flex items-center gap-1">⏱️ Tiempo restante</span>
-                        <span id="timerText" class="text-emerald-600 text-base">15.0s</span>
+                <div>
+                    <div class="timer-header">
+                        <span>⏱️ Tiempo restante</span>
+                        <span id="timerText" style="color:#059669">15.0s</span>
                     </div>
-                    <div class="w-full bg-slate-200 h-4 rounded-full overflow-hidden p-0.5 shadow-inner">
-                        <div id="timerBar" class="bg-emerald-500 h-full rounded-full transition-all duration-100 ease-linear" style="width: 100%"></div>
+                    <div class="timer-track">
+                        <div id="timerBar" class="timer-fill" style="width: 100%"></div>
                     </div>
                 </div>
 
-                <!-- MONSTRUO FINAL: PEONZA DIABÓLICA (Solo visible en Fase 5) -->
-                <div id="bossArena" class="hidden bg-gradient-to-b from-slate-900 to-purple-950 text-white rounded-2xl p-4 mb-4 text-center relative overflow-hidden border-2 border-purple-500">
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="text-xs font-bold uppercase tracking-wider text-purple-300">😈 Jefe Final</span>
-                        <span id="bossHpText" class="text-xs font-bold text-amber-300">Energía: 25 / 25</span>
+                <!-- ARENA JEFE FINAL -->
+                <div id="bossArena" class="boss-arena hidden">
+                    <div class="boss-top-row">
+                        <span style="color:#d8b4fe">😈 JEFE FINAL</span>
+                        <span id="bossHpText" style="color:#fcd34d">Energía: 25 / 25</span>
                     </div>
-                    <div class="w-full bg-slate-700 h-3 rounded-full overflow-hidden mb-3">
-                        <div id="bossHpBar" class="bg-gradient-to-r from-red-500 to-amber-500 h-full transition-all duration-300" style="width: 100%"></div>
+                    <div class="boss-hp-track">
+                        <div id="bossHpBar" class="boss-hp-fill" style="width: 100%"></div>
                     </div>
-                    
-                    <!-- SVG Peonza Diabólica -->
-                    <div class="flex justify-center items-center py-1">
-                        <div id="evilTopGraphic" class="animate-evil-top inline-block">
-                            <svg width="84" height="84" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <!-- Corona / Agarre superior -->
+                    <div style="padding: 4px 0;">
+                        <div class="animate-evil-top">
+                            <svg width="80" height="80" viewBox="0 0 100 100" fill="none">
                                 <rect x="42" y="6" width="16" height="14" rx="4" fill="#F59E0B" stroke="#78350F" stroke-width="3"/>
-                                <!-- Cuerpo de la peonza -->
-                                <path d="M15 35 C15 20, 85 20, 85 35 L55 82 C52 87, 48 87, 45 82 Z" fill="url(#topGrad)" stroke="#4C1D95" stroke-width="3"/>
-                                <!-- Franjas hipnóticas -->
+                                <path d="M15 35 C15 20, 85 20, 85 35 L55 82 C52 87, 48 87, 45 82 Z" fill="#9333EA" stroke="#4C1D95" stroke-width="3"/>
                                 <path d="M22 42 Q50 52 78 42" stroke="#FBBF24" stroke-width="4" stroke-linecap="round"/>
                                 <path d="M32 58 Q50 66 68 58" stroke="#F43F5E" stroke-width="4" stroke-linecap="round"/>
-                                <!-- Ojos diabólicos -->
                                 <polygon points="32,30 44,35 34,39" fill="#FEF08A"/>
                                 <polygon points="68,30 56,35 66,39" fill="#FEF08A"/>
-                                <!-- Punta metálica -->
-                                <path d="M46 84 L50 96 L54 84 Z" fill="#CBD5E1" stroke="#475569" stroke-width="2"/>
-                                <defs>
-                                    <linearGradient id="topGrad" x1="15" y1="20" x2="85" y2="85" gradientUnits="userSpaceOnUse">
-                                        <stop stop-color="#9333EA"/>
-                                        <stop offset="0.5" stop-color="#DC2626"/>
-                                        <stop offset="1" stop-color="#4F46E5"/>
-                                    </linearGradient>
-                                </defs>
+                                <path d="M46 84 L50 96 L54 84 Z" fill="#CBD5E1"/>
                             </svg>
                         </div>
                     </div>
-                    <p id="bossTaunt" class="text-xs sm:text-sm text-purple-200 font-medium mt-1">
-                        "¡Gira que te gira! ¡Nunca acertarás mis 25 multiplicaciones!"
-                    </p>
+                    <p id="bossTaunt" class="boss-taunt">"¡Gira que te gira! ¡Nunca acertarás mis 25 multiplicaciones!"</p>
                 </div>
 
-                <!-- TARJETA DE LA PREGUNTA -->
-                <div id="questionCard" class="bg-gradient-to-br from-indigo-50 to-blue-50 border-2 border-indigo-200 rounded-2xl p-5 sm:p-6 text-center mb-5 relative">
-                    <div id="questionPrompt" class="text-4xl sm:text-6xl font-bold text-slate-800 tracking-wide">
-                        3 × 4 = <span class="text-indigo-600">?</span>
-                    </div>
-                    <!-- Mensaje de feedback instantáneo -->
-                    <div id="feedbackBanner" class="mt-2 h-6 text-sm sm:text-base font-bold"></div>
+                <!-- PREGUNTA -->
+                <div id="questionCard" class="question-card">
+                    <div id="questionPrompt" class="question-text">1 × 1 = <span style="color:#4f46e5">?</span></div>
+                    <div id="feedbackBanner" class="feedback-line"></div>
                 </div>
 
-                <!-- MODO A: 6 OPCIONES A ELEGIR (Fases 1, 2 y 3) -->
-                <div id="optionsGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    <!-- Se rellena dinámicamente con botones grandes -->
-                </div>
+                <!-- MODO 6 OPCIONES -->
+                <div id="optionsGrid" class="options-grid"></div>
 
-                <!-- MODO B: HUECO + TECLADO NUMÉRICO TÁCTIL (Fases 4 y 5) -->
+                <!-- MODO TECLADO NUMÉRICO -->
                 <div id="keypadArea" class="hidden">
-                    <!-- Visor del número escrito -->
-                    <div class="flex justify-center mb-3">
-                        <div id="typedAnswerBox" class="w-48 h-14 bg-slate-100 border-4 border-indigo-400 rounded-2xl flex items-center justify-center text-3xl sm:text-4xl font-bold text-indigo-700 shadow-inner">
-                            _
-                        </div>
-                    </div>
-
-                    <!-- Teclado numérico grande para tablets/móviles -->
-                    <div class="grid grid-cols-3 gap-2 max-w-sm mx-auto">
-                        <button onclick="pressKey('1')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">1</button>
-                        <button onclick="pressKey('2')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">2</button>
-                        <button onclick="pressKey('3')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">3</button>
-                        <button onclick="pressKey('4')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">4</button>
-                        <button onclick="pressKey('5')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">5</button>
-                        <button onclick="pressKey('6')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">6</button>
-                        <button onclick="pressKey('7')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">7</button>
-                        <button onclick="pressKey('8')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">8</button>
-                        <button onclick="pressKey('9')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">9</button>
-                        <button onclick="clearKey()" class="btn-3d bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold text-lg py-3.5 rounded-2xl">⌫ Borrar</button>
-                        <button onclick="pressKey('0')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">0</button>
-                        <button onclick="submitTypedAnswer()" class="btn-3d bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-lg py-3.5 rounded-2xl">✅ Listo</button>
+                    <div id="typedAnswerBox" class="typed-visor">_</div>
+                    <div class="keypad-grid">
+                        <button type="button" data-key="1" class="btn-3d key-btn">1</button>
+                        <button type="button" data-key="2" class="btn-3d key-btn">2</button>
+                        <button type="button" data-key="3" class="btn-3d key-btn">3</button>
+                        <button type="button" data-key="4" class="btn-3d key-btn">4</button>
+                        <button type="button" data-key="5" class="btn-3d key-btn">5</button>
+                        <button type="button" data-key="6" class="btn-3d key-btn">6</button>
+                        <button type="button" data-key="7" class="btn-3d key-btn">7</button>
+                        <button type="button" data-key="8" class="btn-3d key-btn">8</button>
+                        <button type="button" data-key="9" class="btn-3d key-btn">9</button>
+                        <button type="button" id="btnKeyClear" class="btn-3d key-btn key-del">⌫ Borrar</button>
+                        <button type="button" data-key="0" class="btn-3d key-btn">0</button>
+                        <button type="button" id="btnKeyOk" class="btn-3d key-btn key-ok">✅ Listo</button>
                     </div>
                 </div>
-
             </section>
 
-            <!-- PANTALLA 3: CELEBRACIÓN INTERMEDIA, BAILE Y CÓDIGO SECRETO -->
-            <section id="screen-celebration" class="hidden bg-white rounded-3xl shadow-xl p-6 sm:p-8 border-4 border-amber-200 text-center animate-pop">
-                <div class="inline-block bg-emerald-100 text-emerald-800 font-bold px-4 py-1 rounded-full text-sm mb-3">
-                    🎉 ¡FASE SUPERADA!
+            <!-- PANTALLA 3: CELEBRACIÓN INTERMEDIA -->
+            <section id="screen-celebration" class="card hidden animate-pop" style="border-color:#fde68a">
+                <div class="badge-amber" style="background:#d1fae5; color:#065f46">🎉 ¡FASE SUPERADA!</div>
+                <h2 id="celTitle">¡Increíble trabajo!</h2>
+                <p id="celSubtitle" class="intro-text">Has completado todas las tablas de esta fase. ¡Mira cómo bailan!</p>
+                <div id="danceStage" class="dance-stage"></div>
+                <div class="unlocked-card">
+                    <div style="font-size:13px; font-weight:800; color:#c7d2fe">🔑 APUNTA ESTE CÓDIGO SECRETO DE 4 CIFRAS</div>
+                    <div id="unlockedCodeDisplay" class="unlocked-code">2486</div>
+                    <div id="unlockedCodeHint" style="font-size:13px; color:#e0e7ff"></div>
                 </div>
-                <h2 id="celTitle" class="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
-                    ¡Increíble trabajo!
-                </h2>
-                <p id="celSubtitle" class="text-slate-600 mb-5 text-sm sm:text-base">
-                    Has completado todas las tablas de esta fase. ¡Mira cómo bailan tus compañeros!
-                </p>
-
-                <!-- Escenario de baile animado -->
-                <div id="danceStage" class="bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 border-2 border-amber-200 rounded-2xl py-6 px-4 mb-6 flex justify-center items-center gap-4 sm:gap-6 text-5xl sm:text-6xl">
-                    <!-- Se rellena con bailarines diferentes según la fase -->
-                </div>
-
-                <!-- Tarjeta del código secreto de 4 cifras -->
-                <div class="bg-indigo-600 text-white rounded-2xl p-5 mb-6 shadow-lg">
-                    <p class="text-xs sm:text-sm uppercase tracking-wider text-indigo-200 font-bold mb-1">
-                        🔑 Apunta este código secreto de 4 cifras
-                    </p>
-                    <div id="unlockedCodeDisplay" class="text-4xl sm:text-5xl font-bold tracking-widest my-2 text-amber-300">
-                        2841
-                    </div>
-                    <p id="unlockedCodeHint" class="text-xs text-indigo-100">
-                        Con este número podrás entrar directamente a la Fase 2 la próxima vez.
-                    </p>
-                </div>
-
-                <button id="nextPhaseBtn" onclick="goToNextPhase()" class="w-full btn-3d bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold text-xl py-4 px-6 rounded-2xl">
+                <button id="nextPhaseBtn" class="btn-3d btn-start-main" style="background:linear-gradient(90deg,#4f46e5,#7c3aed)">
                     Continuar a la siguiente fase ➡️
                 </button>
             </section>
 
-            <!-- PANTALLA 4: VICTORIA FINAL CONTRA LA PEONZA DIABÓLICA -->
-            <section id="screen-victory" class="hidden bg-white rounded-3xl shadow-xl p-6 sm:p-8 border-4 border-yellow-300 text-center animate-pop">
-                <div class="text-5xl mb-2">🏆👑🏆</div>
-                <h2 class="text-2xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 mb-2">
-                    ¡ENHORABUENA, CAMPEÓN / CAMPEONA!
-                </h2>
-                <p class="text-slate-700 font-medium text-base sm:text-lg mb-4">
+            <!-- PANTALLA 4: VICTORIA FINAL -->
+            <section id="screen-victory" class="card hidden animate-pop" style="border-color:#fde047">
+                <div style="font-size:48px; margin-bottom:8px">🏆👑🏆</div>
+                <h2 style="color:#4f46e5">¡ENHORABUENA, CAMPEÓN / CAMPEONA!</h2>
+                <p class="intro-text">
                     ¡Has derrotado a la <strong>Peonza Diabólica</strong> y dominas todas las tablas del 1 al 9 del <strong>CEIP Antonio Machado</strong>!
                 </p>
-
-                <!-- Animación de la peonza derrotada mareada + baile final -->
-                <div class="bg-slate-900 rounded-2xl p-6 mb-6 text-white relative overflow-hidden">
-                    <div class="flex justify-center items-center gap-6">
-                        <span class="text-5xl animate-dance">🥳</span>
-                        <div class="animate-defeated-top inline-block">
-                            <svg width="90" height="90" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="42" y="6" width="16" height="14" rx="4" fill="#F59E0B" stroke="#78350F" stroke-width="3"/>
-                                <path d="M15 35 C15 20, 85 20, 85 35 L55 82 C52 87, 48 87, 45 82 Z" fill="#64748B" stroke="#334155" stroke-width="3"/>
-                                <!-- Ojos mareados en X -->
+                <div style="background:#0f172a; border-radius:20px; padding:22px; margin-bottom:20px; color:white">
+                    <div style="display:flex; justify-content:center; align-items:center; gap:20px">
+                        <span class="animate-dance" style="font-size:46px">🥳</span>
+                        <div class="animate-defeated-top">
+                            <svg width="84" height="84" viewBox="0 0 100 100" fill="none">
+                                <rect x="42" y="6" width="16" height="14" rx="4" fill="#F59E0B"/>
+                                <path d="M15 35 C15 20, 85 20, 85 35 L55 82 C52 87, 48 87, 45 82 Z" fill="#64748B"/>
                                 <text x="28" y="42" fill="#FEF08A" font-size="16" font-weight="bold">✖</text>
                                 <text x="58" y="42" fill="#FEF08A" font-size="16" font-weight="bold">✖</text>
                                 <path d="M46 84 L50 96 L54 84 Z" fill="#CBD5E1"/>
                             </svg>
                         </div>
-                        <span class="text-5xl animate-dance">💃</span>
+                        <span class="animate-dance" style="font-size:46px">💃</span>
                     </div>
-                    <p class="text-amber-300 font-bold text-sm mt-4">
-                        🌀 "¡Noooo! ¡Me has dejado sin energía matemática! ¡Eres demasiado rápido!"
+                    <p style="color:#fcd34d; font-weight:800; font-size:14px; margin-top:12px">
+                        🌀 "¡Noooo! ¡Me has dejado sin energía matemática!"
                     </p>
                 </div>
-
-                <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4 mb-6 text-emerald-800 font-bold text-sm sm:text-base">
-                    🎓 Diploma Desbloqueado: Experto/a en Multiplicaciones de 3.º de Primaria
-                </div>
-
-                <button onclick="resetToHome()" class="w-full btn-3d bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xl py-4 px-6 rounded-2xl">
-                    🔄 Volver al inicio
-                </button>
+                <button id="btnRestartAll" class="btn-3d btn-start-main">🔄 Volver al inicio</button>
             </section>
 
         </div>
     </main>
 
-    <!-- MODAL PERSONALIZADO (Sustituye a alert/confirm) -->
-    <div id="customModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl border-4 border-indigo-100 animate-pop">
-            <div id="modalIcon" class="text-5xl mb-3">⚠️</div>
-            <h3 id="modalTitle" class="text-xl font-bold text-slate-800 mb-2">Título</h3>
-            <p id="modalMessage" class="text-slate-600 text-sm sm:text-base mb-6">Mensaje</p>
-            <div id="modalButtons" class="flex gap-3 justify-center">
-                <!-- Botones dinámicos -->
-            </div>
+    <!-- MODAL PERSONALIZADO -->
+    <div id="customModal" class="modal-backdrop hidden">
+        <div class="modal-card animate-pop">
+            <div id="modalIcon" style="font-size:50px; margin-bottom:10px">⚠️</div>
+            <h3 id="modalTitle" style="font-size:21px; font-weight:800; margin-bottom:8px">Título</h3>
+            <p id="modalMessage" style="color:#475569; font-size:15px; line-height:1.45"></p>
+            <div id="modalButtons" class="modal-btns"></div>
         </div>
     </div>
 
-    <!-- PIE DE PÁGINA -->
-    <footer class="text-center py-3 text-xs text-slate-500 font-medium">
-        CEIP Antonio Machado • Aprendiendo las tablas jugando 🌟
+    <footer>
+        CEIP Antonio Machado • Versión 2.0 (Lista para jugar) 🌟
     </footer>
 
     <script>
-        /**
-         * CONFIGURACIÓN Y ESTADO GLOBAL DE LA APLICACIÓN
-         */
-        const PHASE_CODES = {
-            2: "2486", // Código para desbloquear Fase 2
-            3: "5193", // Código para desbloquear Fase 3
-            4: "7364", // Código para desbloquear Fase 4
-            5: "9518"  // Código para desbloquear Fase 5 (Peonza Diabólica)
-        };
+        (function () {
+            "use strict";
 
-        const QUESTION_TIME_LIMIT = 15.0; // 15 segundos por pregunta
-
-        let state = {
-            phase: 1,               // 1, 2, 3, 4 o 5
-            currentTable: 1,        // Tabla actual (1 a 9)
-            stepIndex: 0,           // Índice de pregunta dentro de la tabla actual (0 a 9)
-            multipliersOrder: [],   // Array con el orden de multiplicadores [1..10]
-            bossQuestions: [],      // Array de 25 preguntas {a, b} para la Fase 5
-            bossIndex: 0,           // Índice actual en la Fase 5 (0 a 24)
-            lives: 3,               // Vidas para Fase 4 y Fase 5
-            currentA: 1,            // Factor A actual
-            currentB: 1,            // Factor B actual
-            correctAnswer: 1,       // Respuesta correcta actual
-            typedInput: "",         // Texto escrito en fases 4 y 5
-            timerInterval: null,    // Referencia al temporizador
-            timeLeft: 15.0,         // Tiempo restante en segundos
-            isLocked: false,        // Bloquea pulsaciones mientras se muestra feedback
-            soundEnabled: true      // Efectos de sonido Web Audio API
-        };
-
-        /**
-         * SISTEMA DE EFECTOS DE SONIDO SINTETIZADOS (SIN ARCHIVOS EXTERNOS)
-         */
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        let audioCtx = null;
-
-        function playTone(freq, type, duration, delay = 0) {
-            if (!state.soundEnabled) return;
-            try {
-                if (!audioCtx) audioCtx = new AudioCtx();
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
-
-                gain.gain.setValueAtTime(0.15, audioCtx.currentTime + delay);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
-
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                osc.start(audioCtx.currentTime + delay);
-                osc.stop(audioCtx.currentTime + delay + duration);
-            } catch (e) {
-                // Ignorar si el navegador bloquea audio antes de interacción
-            }
-        }
-
-        function sfxCorrect() {
-            playTone(523.25, 'sine', 0.12, 0);    // Do5
-            playTone(659.25, 'sine', 0.18, 0.08); // Mi5
-        }
-
-        function sfxWrong() {
-            playTone(220, 'sawtooth', 0.2, 0);
-            playTone(175, 'sawtooth', 0.3, 0.15);
-        }
-
-        function sfxFanfare() {
-            const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
-            notes.forEach((n, idx) => playTone(n, 'triangle', 0.18, idx * 0.12));
-        }
-
-        function toggleSound() {
-            state.soundEnabled = !state.soundEnabled;
-            document.getElementById('soundToggle').textContent = state.soundEnabled ? '🔊' : '🔇';
-        }
-
-        /**
-         * NAVEGACIÓN ENTRE PANTALLAS
-         */
-        function showScreen(screenId) {
-            const screens = ['screen-start', 'screen-game', 'screen-celebration', 'screen-victory'];
-            screens.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.classList.add('hidden');
-            });
-            const target = document.getElementById(screenId);
-            if (target) target.classList.remove('hidden');
-        }
-
-        function confirmExit() {
-            stopTimer();
-            openModal(
-                '🏠',
-                '¿Volver al inicio?',
-                'Si sales ahora perderás el progreso de la fase actual.',
-                [
-                    {
-                        text: 'Seguir jugando',
-                        class: 'bg-slate-200 text-slate-800',
-                        action: () => {
-                            closeModal();
-                            startTimer();
-                        }
-                    },
-                    {
-                        text: 'Salir al inicio',
-                        class: 'bg-rose-500 text-white',
-                        action: () => {
-                            closeModal();
-                            resetToHome();
-                        }
-                    }
-                ]
-            );
-        }
-
-        function resetToHome() {
-            stopTimer();
-            document.getElementById('secretCodeInput').value = '';
-            document.getElementById('codeErrorMsg').classList.add('hidden');
-            showScreen('screen-start');
-        }
-
-        /**
-         * VALIDACIÓN DE CÓDIGO SECRETO DE 4 CIFRAS
-         */
-        function checkSecretCode() {
-            const input = document.getElementById('secretCodeInput').value.trim();
-            const errorMsg = document.getElementById('codeErrorMsg');
-            errorMsg.classList.add('hidden');
-
-            let targetPhase = null;
-            for (const [phaseNum, code] of Object.entries(PHASE_CODES)) {
-                if (input === code) {
-                    targetPhase = parseInt(phaseNum, 10);
-                    break;
-                }
-            }
-
-            if (targetPhase) {
-                sfxCorrect();
-                startPhase(targetPhase);
-            } else {
-                sfxWrong();
-                errorMsg.classList.remove('hidden');
-            }
-        }
-
-        /**
-         * INICIO DE CADA FASE Y PREPARACIÓN DE PREGUNTAS
-         */
-        function startPhase(phaseNum) {
-            stopTimer();
-            state.phase = phaseNum;
-            state.currentTable = 1;
-            state.stepIndex = 0;
-            state.lives = 3;
-            state.isLocked = false;
-
-            const phaseNames = {
-                1: 'Fase 1: En orden (1 al 9)',
-                2: 'Fase 2: Hacia atrás (×10 a ×1)',
-                3: 'Fase 3: Desordenadas',
-                4: 'Fase 4: Escribe el número',
-                5: 'Fase 5: Peonza Diabólica'
+            const PHASE_CODES = {
+                2: "2486",
+                3: "5193",
+                4: "7364",
+                5: "9518"
             };
 
-            document.getElementById('phaseBadge').textContent = phaseNames[phaseNum] || `Fase ${phaseNum}`;
+            const QUESTION_TIME_LIMIT = 15.0;
 
-            // Configurar visibilidad de vidas (Fases 4 y 5)
-            const livesContainer = document.getElementById('livesContainer');
-            if (phaseNum >= 4) {
-                livesContainer.classList.remove('hidden');
-                updateHeartsUI();
-            } else {
-                livesContainer.classList.add('hidden');
+            const state = {
+                phase: 1,
+                currentTable: 1,
+                stepIndex: 0,
+                multipliersOrder: [],
+                bossQuestions: [],
+                bossIndex: 0,
+                lives: 3,
+                currentA: 1,
+                currentB: 1,
+                correctAnswer: 1,
+                typedInput: "",
+                timerInterval: null,
+                timeLeft: 15.0,
+                isLocked: false,
+                soundEnabled: true
+            };
+
+            /* SONIDO SINTETIZADO SEGURO */
+            let audioCtx = null;
+            function playTone(freq, type, duration, delay) {
+                if (!state.soundEnabled) return;
+                try {
+                    const Ctx = window.AudioContext || window.webkitAudioContext;
+                    if (!Ctx) return;
+                    if (!audioCtx) audioCtx = new Ctx();
+                    if (audioCtx.state === "suspended") audioCtx.resume();
+
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (delay || 0));
+                    gain.gain.setValueAtTime(0.14, audioCtx.currentTime + (delay || 0));
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (delay || 0) + duration);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(audioCtx.currentTime + (delay || 0));
+                    osc.stop(audioCtx.currentTime + (delay || 0) + duration);
+                } catch (e) {}
             }
 
-            // Configurar visibilidad de Arena del Jefe Final (Fase 5)
-            const bossArena = document.getElementById('bossArena');
-            if (phaseNum === 5) {
-                bossArena.classList.remove('hidden');
-                document.getElementById('bossTaunt').textContent = '"¡Gira que te gira! ¡Nunca acertarás mis 25 multiplicaciones!"';
-                generateBossQuestions();
-            } else {
-                bossArena.classList.add('hidden');
-                prepareTableOrder();
+            function sfxCorrect() {
+                playTone(523.25, "sine", 0.12, 0);
+                playTone(659.25, "sine", 0.18, 0.08);
             }
 
-            showScreen('screen-game');
-            loadQuestion();
-        }
-
-        function prepareTableOrder() {
-            state.stepIndex = 0;
-            const base = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-            if (state.phase === 1 || state.phase === 4) {
-                state.multipliersOrder = [...base];
-            } else if (state.phase === 2) {
-                state.multipliersOrder = [...base].reverse();
-            } else if (state.phase === 3) {
-                state.multipliersOrder = shuffleArray([...base]);
-            }
-        }
-
-        function generateBossQuestions() {
-            state.bossIndex = 0;
-            const pool = [];
-            for (let a = 1; a <= 9; a++) {
-                for (let b = 1; b <= 10; b++) {
-                    pool.push({ a, b });
-                }
-            }
-            shuffleArray(pool);
-            state.bossQuestions = pool.slice(0, 25);
-        }
-
-        function loadQuestion() {
-            state.isLocked = false;
-            state.typedInput = "";
-            document.getElementById('feedbackBanner').innerHTML = '';
-
-            if (state.phase <= 4) {
-                state.currentA = state.currentTable;
-                state.currentB = state.multipliersOrder[state.stepIndex];
-                state.correctAnswer = state.currentA * state.currentB;
-
-                document.getElementById('tableProgressText').textContent =
-                    `Tabla del ${state.currentTable} (${state.stepIndex + 1} / 10)`;
-
-                const totalSteps = 90;
-                const doneSteps = (state.currentTable - 1) * 10 + state.stepIndex;
-                const pct = Math.max(4, Math.round((doneSteps / totalSteps) * 100));
-                document.getElementById('overallProgressBar').style.width = `${pct}%`;
-            } else {
-                const q = state.bossQuestions[state.bossIndex];
-                state.currentA = q.a;
-                state.currentB = q.b;
-                state.correctAnswer = q.a * q.b;
-
-                const remaining = 25 - state.bossIndex;
-                document.getElementById('tableProgressText').textContent =
-                    `Duelo Final: Pregunta ${state.bossIndex + 1} / 25`;
-                document.getElementById('bossHpText').textContent = `Energía: ${remaining} / 25`;
-                document.getElementById('bossHpBar').style.width = `${(remaining / 25) * 100}%`;
-
-                const pct = Math.max(4, Math.round((state.bossIndex / 25) * 100));
-                document.getElementById('overallProgressBar').style.width = `${pct}%`;
+            function sfxWrong() {
+                playTone(220, "sawtooth", 0.2, 0);
+                playTone(175, "sawtooth", 0.3, 0.15);
             }
 
-            document.getElementById('questionPrompt').innerHTML =
-                `${state.currentA} × ${state.currentB} = <span class="text-indigo-600">?</span>`;
-
-            // Mostrar 6 opciones (Fases 1-3) o teclado numérico (Fases 4-5)
-            const optionsGrid = document.getElementById('optionsGrid');
-            const keypadArea = document.getElementById('keypadArea');
-
-            if (state.phase <= 3) {
-                optionsGrid.classList.remove('hidden');
-                keypadArea.classList.add('hidden');
-                renderOptions();
-            } else {
-                optionsGrid.classList.add('hidden');
-                keypadArea.classList.remove('hidden');
-                updateTypedBox();
+            function sfxFanfare() {
+                [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50].forEach(function (n, i) {
+                    playTone(n, "triangle", 0.18, i * 0.12);
+                });
             }
 
-            startTimer();
-        }
+            function showScreen(id) {
+                ["screen-start", "screen-game", "screen-celebration", "screen-victory"].forEach(function (s) {
+                    const el = document.getElementById(s);
+                    if (el) el.classList.add("hidden");
+                });
+                const target = document.getElementById(id);
+                if (target) target.classList.remove("hidden");
+            }
 
-        function renderOptions() {
-            const correct = state.correctAnswer;
-            const choices = new Set([correct]);
-
-            // Generar distractores cercanos y plausibles de las tablas
-            while (choices.size < 6) {
-                const offset = Math.floor(Math.random() * 15) - 7;
-                let candidate = correct + offset;
-                if (candidate <= 0 || candidate === correct) {
-                    candidate = (Math.floor(Math.random() * 9) + 1) * (Math.floor(Math.random() * 10) + 1);
-                }
-                if (candidate > 0 && candidate !== correct) {
-                    choices.add(candidate);
+            function stopTimer() {
+                if (state.timerInterval) {
+                    clearInterval(state.timerInterval);
+                    state.timerInterval = null;
                 }
             }
 
-            const shuffledChoices = shuffleArray(Array.from(choices));
-            const colors = [
-                'bg-blue-500 hover:bg-blue-600 text-white',
-                'bg-purple-500 hover:bg-purple-600 text-white',
-                'bg-pink-500 hover:bg-pink-600 text-white',
-                'bg-amber-500 hover:bg-amber-600 text-white',
-                'bg-teal-500 hover:bg-teal-600 text-white',
-                'bg-indigo-500 hover:bg-indigo-600 text-white'
-            ];
-
-            const grid = document.getElementById('optionsGrid');
-            grid.innerHTML = '';
-            shuffledChoices.forEach((val, idx) => {
-                const btn = document.createElement('button');
-                btn.className = `btn-3d font-bold text-2xl sm:text-3xl py-4 sm:py-5 rounded-2xl ${colors[idx % colors.length]}`;
-                btn.textContent = val;
-                btn.onclick = () => handleAnswer(val);
-                grid.appendChild(btn);
-            });
-        }
-
-        /**
-         * CONTROLES DEL TECLADO NUMÉRICO (FASES 4 Y 5)
-         */
-        function pressKey(digit) {
-            if (state.isLocked) return;
-            if (state.typedInput.length < 3) {
-                state.typedInput += digit;
-                updateTypedBox();
-                playTone(440, 'sine', 0.05, 0);
-            }
-        }
-
-        function clearKey() {
-            if (state.isLocked) return;
-            state.typedInput = state.typedInput.slice(0, -1);
-            updateTypedBox();
-            playTone(300, 'sine', 0.05, 0);
-        }
-
-        function updateTypedBox() {
-            const box = document.getElementById('typedAnswerBox');
-            box.textContent = state.typedInput.length > 0 ? state.typedInput : '_';
-        }
-
-        function submitTypedAnswer() {
-            if (state.isLocked) return;
-            if (state.typedInput.length === 0) {
-                const box = document.getElementById('typedAnswerBox');
-                box.classList.add('animate-shake');
-                setTimeout(() => box.classList.remove('animate-shake'), 400);
-                return;
-            }
-            const numericVal = parseInt(state.typedInput, 10);
-            handleAnswer(numericVal);
-        }
-
-        // Soporte opcional para teclado físico en ordenador
-        document.addEventListener('keydown', (e) => {
-            if (document.getElementById('screen-game').classList.contains('hidden')) return;
-            if (state.phase < 4 || state.isLocked) return;
-
-            if (e.key >= '0' && e.key <= '9') {
-                pressKey(e.key);
-            } else if (e.key === 'Backspace') {
-                clearKey();
-            } else if (e.key === 'Enter') {
-                submitTypedAnswer();
-            }
-        });
-
-        /**
-         * TEMPORIZADOR DE 15 SEGUNDOS POR PREGUNTA
-         */
-        function startTimer() {
-            stopTimer();
-            state.timeLeft = QUESTION_TIME_LIMIT;
-            updateTimerUI();
-
-            state.timerInterval = setInterval(() => {
-                state.timeLeft = Math.max(0, state.timeLeft - 0.1);
+            function startTimer() {
+                stopTimer();
+                state.timeLeft = QUESTION_TIME_LIMIT;
                 updateTimerUI();
+                state.timerInterval = setInterval(function () {
+                    state.timeLeft = Math.max(0, state.timeLeft - 0.1);
+                    updateTimerUI();
+                    if (state.timeLeft <= 0) {
+                        stopTimer();
+                        handleTimeout();
+                    }
+                }, 100);
+            }
 
-                if (state.timeLeft <= 0) {
-                    stopTimer();
-                    handleTimeout();
+            function updateTimerUI() {
+                const pct = (state.timeLeft / QUESTION_TIME_LIMIT) * 100;
+                const bar = document.getElementById("timerBar");
+                const text = document.getElementById("timerText");
+                bar.style.width = pct + "%";
+                text.textContent = state.timeLeft.toFixed(1) + "s";
+
+                if (state.timeLeft > 7.5) {
+                    bar.style.background = "#10b981";
+                    text.style.color = "#059669";
+                } else if (state.timeLeft > 3.5) {
+                    bar.style.background = "#f59e0b";
+                    text.style.color = "#d97706";
+                } else {
+                    bar.style.background = "#ef4444";
+                    text.style.color = "#dc2626";
                 }
-            }, 100);
-        }
-
-        function stopTimer() {
-            if (state.timerInterval) {
-                clearInterval(state.timerInterval);
-                state.timerInterval = null;
             }
-        }
 
-        function updateTimerUI() {
-            const pct = (state.timeLeft / QUESTION_TIME_LIMIT) * 100;
-            const bar = document.getElementById('timerBar');
-            const text = document.getElementById('timerText');
-
-            bar.style.width = `${pct}%`;
-            text.textContent = `${state.timeLeft.toFixed(1)}s`;
-
-            if (state.timeLeft > 7.5) {
-                bar.className = "bg-emerald-500 h-full rounded-full transition-all duration-100 ease-linear";
-                text.className = "text-emerald-600 text-base font-bold";
-            } else if (state.timeLeft > 3.5) {
-                bar.className = "bg-amber-500 h-full rounded-full transition-all duration-100 ease-linear";
-                text.className = "text-amber-600 text-base font-bold";
-            } else {
-                bar.className = "bg-rose-500 h-full rounded-full transition-all duration-100 ease-linear";
-                text.className = "text-rose-600 text-base font-bold animate-pulse";
+            function shuffleArray(arr) {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    const tmp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = tmp;
+                }
+                return arr;
             }
-        }
 
-        /**
-         * LÓGICA AL RESPONDER O AGOTARSE EL TIEMPO
-         */
-        function handleAnswer(selectedValue) {
-            if (state.isLocked) return;
-            state.isLocked = true;
-            stopTimer();
-
-            if (selectedValue === state.correctAnswer) {
-                // ¡ACIERTO!
-                sfxCorrect();
-                document.getElementById('questionPrompt').innerHTML = 
-                    `${state.currentA} × ${state.currentB} = <span class="text-emerald-600">${state.correctAnswer}</span>`;
-                document.getElementById('feedbackBanner').innerHTML = 
-                    `<span class="text-emerald-600">✨ ¡Genial! ¡Muy bien!</span>`;
-
-                setTimeout(() => {
-                    advanceAfterCorrect();
-                }, 650);
-            } else {
-                // FALLO
-                processMistake(`❌ ¡Ups! ${state.currentA} × ${state.currentB} era ${state.correctAnswer}`);
+            function updateHeartsUI() {
+                const full = "❤️".repeat(Math.max(0, state.lives));
+                const empty = "🖤".repeat(Math.max(0, 3 - state.lives));
+                document.getElementById("heartsDisplay").textContent = full + empty;
             }
-        }
 
-        function handleTimeout() {
-            if (state.isLocked) return;
-            state.isLocked = true;
-            processMistake(`⏰ ¡Se acabó el tiempo! Era ${state.correctAnswer}`);
-        }
+            function openModal(icon, title, message, buttons) {
+                document.getElementById("modalIcon").textContent = icon;
+                document.getElementById("modalTitle").textContent = title;
+                document.getElementById("modalMessage").innerText = message;
 
-        function processMistake(reasonText) {
-            sfxWrong();
-            const card = document.getElementById('questionCard');
-            card.classList.add('animate-shake');
-            setTimeout(() => card.classList.remove('animate-shake'), 450);
+                const box = document.getElementById("modalButtons");
+                box.innerHTML = "";
+                buttons.forEach(function (b) {
+                    const btn = document.createElement("button");
+                    btn.className = "btn-3d";
+                    btn.style.padding = "12px 18px";
+                    btn.style.fontSize = "16px";
+                    btn.style.width = b.full ? "100%" : "auto";
+                    btn.style.background = b.bg || "#4f46e5";
+                    btn.style.color = b.color || "#ffffff";
+                    btn.textContent = b.text;
+                    btn.addEventListener("click", b.action);
+                    box.appendChild(btn);
+                });
 
-            document.getElementById('feedbackBanner').innerHTML = 
-                `<span class="text-rose-600">${reasonText}</span>`;
+                document.getElementById("customModal").classList.remove("hidden");
+            }
 
-            const funnyPhrases = [
-                "¿Pero qué dices, cabeza de chorlito? 🐦",
-                "¡Anda, anda, anda! ¡Uy, uy, uy, aquí huelo a borriquito aunque no lo veo! 🫏",
-                "¡Madre mía del amor hermoso, qué despiste! 🙈",
-                "¡Ayy, casi te pillo en babia! ¡Despierta, dormilón! 😴",
-                "¡Epa! ¡Que se te ha escapado el número por la ventana! 🪟",
-                "¡Uy, uy, uy! ¡Esa calculadora mental necesita un poco de aceite! ⚙️"
-            ];
-            const randomJoke = funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)];
+            function closeModal() {
+                document.getElementById("customModal").classList.add("hidden");
+            }
 
-            if (state.phase <= 3) {
-                // Fases 1, 2 y 3: vuelve al inicio de esa misma tabla
-                const startHint = state.phase === 2 ? `${state.currentTable} × 10` : `${state.currentTable} × 1`;
-                setTimeout(() => {
-                    openModal(
-                        '🤪',
-                        randomJoke,
-                        `${reasonText}.\nVolvemos al principio de la tabla del ${state.currentTable} (${startHint}) para practicarla bien.`,
-                        [{
-                            text: `Repetir tabla del ${state.currentTable}`,
-                            class: 'bg-indigo-600 text-white w-full',
-                            action: () => {
+            function resetToHome() {
+                stopTimer();
+                document.getElementById("secretCodeInput").value = "";
+                document.getElementById("codeErrorMsg").classList.add("hidden");
+                showScreen("screen-start");
+            }
+
+            function startPhase(phaseNum) {
+                stopTimer();
+                state.phase = phaseNum;
+                state.currentTable = 1;
+                state.stepIndex = 0;
+                state.lives = 3;
+                state.isLocked = false;
+
+                const names = {
+                    1: "Fase 1: En orden (1 al 9)",
+                    2: "Fase 2: Hacia atrás (×10 a ×1)",
+                    3: "Fase 3: Desordenadas",
+                    4: "Fase 4: Escribe el número",
+                    5: "Fase 5: Peonza Diabólica"
+                };
+                document.getElementById("phaseBadge").textContent = names[phaseNum];
+
+                const livesContainer = document.getElementById("livesContainer");
+                if (phaseNum >= 4) {
+                    livesContainer.classList.remove("hidden");
+                    updateHeartsUI();
+                } else {
+                    livesContainer.classList.add("hidden");
+                }
+
+                const bossArena = document.getElementById("bossArena");
+                if (phaseNum === 5) {
+                    bossArena.classList.remove("hidden");
+                    document.getElementById("bossTaunt").textContent = '"¡Gira que te gira! ¡Nunca acertarás mis 25 multiplicaciones!"';
+                    state.bossIndex = 0;
+                    const pool = [];
+                    for (let a = 1; a <= 9; a++) {
+                        for (let b = 1; b <= 10; b++) pool.push({ a: a, b: b });
+                    }
+                    state.bossQuestions = shuffleArray(pool).slice(0, 25);
+                } else {
+                    bossArena.classList.add("hidden");
+                    prepareTableOrder();
+                }
+
+                showScreen("screen-game");
+                loadQuestion();
+            }
+
+            function prepareTableOrder() {
+                state.stepIndex = 0;
+                const base = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+                if (state.phase === 1 || state.phase === 4) {
+                    state.multipliersOrder = base.slice();
+                } else if (state.phase === 2) {
+                    state.multipliersOrder = base.slice().reverse();
+                } else if (state.phase === 3) {
+                    state.multipliersOrder = shuffleArray(base.slice());
+                }
+            }
+
+            function loadQuestion() {
+                state.isLocked = false;
+                state.typedInput = "";
+                document.getElementById("feedbackBanner").innerHTML = "";
+
+                if (state.phase <= 4) {
+                    state.currentA = state.currentTable;
+                    state.currentB = state.multipliersOrder[state.stepIndex];
+                    state.correctAnswer = state.currentA * state.currentB;
+
+                    document.getElementById("tableProgressText").textContent =
+                        "Tabla del " + state.currentTable + " (" + (state.stepIndex + 1) + " / 10)";
+                    const done = (state.currentTable - 1) * 10 + state.stepIndex;
+                    document.getElementById("overallProgressBar").style.width = Math.max(4, Math.round((done / 90) * 100)) + "%";
+                } else {
+                    const q = state.bossQuestions[state.bossIndex];
+                    state.currentA = q.a;
+                    state.currentB = q.b;
+                    state.correctAnswer = q.a * q.b;
+
+                    const rem = 25 - state.bossIndex;
+                    document.getElementById("tableProgressText").textContent =
+                        "Duelo Final: Pregunta " + (state.bossIndex + 1) + " / 25";
+                    document.getElementById("bossHpText").textContent = "Energía: " + rem + " / 25";
+                    document.getElementById("bossHpBar").style.width = ((rem / 25) * 100) + "%";
+                    document.getElementById("overallProgressBar").style.width = Math.max(4, Math.round((state.bossIndex / 25) * 100)) + "%";
+                }
+
+                document.getElementById("questionPrompt").innerHTML =
+                    state.currentA + " × " + state.currentB + ' = <span style="color:#4f46e5">?</span>';
+
+                const optionsGrid = document.getElementById("optionsGrid");
+                const keypadArea = document.getElementById("keypadArea");
+
+                if (state.phase <= 3) {
+                    optionsGrid.classList.remove("hidden");
+                    keypadArea.classList.add("hidden");
+                    renderOptions();
+                } else {
+                    optionsGrid.classList.add("hidden");
+                    keypadArea.classList.remove("hidden");
+                    document.getElementById("typedAnswerBox").textContent = "_";
+                }
+
+                startTimer();
+            }
+
+            function renderOptions() {
+                const correct = state.correctAnswer;
+                const set = new Set([correct]);
+                while (set.size < 6) {
+                    const offset = Math.floor(Math.random() * 15) - 7;
+                    let cand = correct + offset;
+                    if (cand <= 0 || cand === correct) {
+                        cand = (Math.floor(Math.random() * 9) + 1) * (Math.floor(Math.random() * 10) + 1);
+                    }
+                    if (cand > 0 && cand !== correct) set.add(cand);
+                }
+
+                const list = shuffleArray(Array.from(set));
+                const colorClasses = ["c-blue", "c-purple", "c-pink", "c-amber", "c-teal", "c-indigo"];
+                const grid = document.getElementById("optionsGrid");
+                grid.innerHTML = "";
+
+                list.forEach(function (val, idx) {
+                    const btn = document.createElement("button");
+                    btn.type = "button";
+                    btn.className = "btn-3d opt-btn " + colorClasses[idx % colorClasses.length];
+                    btn.textContent = val;
+                    btn.addEventListener("click", function () {
+                        handleAnswer(val);
+                    });
+                    grid.appendChild(btn);
+                });
+            }
+
+            function handleAnswer(val) {
+                if (state.isLocked) return;
+                state.isLocked = true;
+                stopTimer();
+
+                if (val === state.correctAnswer) {
+                    sfxCorrect();
+                    document.getElementById("questionPrompt").innerHTML =
+                        state.currentA + " × " + state.currentB + ' = <span style="color:#059669">' + state.correctAnswer + "</span>";
+                    document.getElementById("feedbackBanner").innerHTML =
+                        '<span style="color:#059669">✨ ¡Genial! ¡Muy bien!</span>';
+                    setTimeout(advanceAfterCorrect, 600);
+                } else {
+                    processMistake("❌ ¡Ups! " + state.currentA + " × " + state.currentB + " era " + state.correctAnswer);
+                }
+            }
+
+            function handleTimeout() {
+                if (state.isLocked) return;
+                state.isLocked = true;
+                processMistake("⏰ ¡Se acabó el tiempo! Era " + state.correctAnswer);
+            }
+
+            function processMistake(reasonText) {
+                sfxWrong();
+                const card = document.getElementById("questionCard");
+                card.classList.add("animate-shake");
+                setTimeout(function () { card.classList.remove("animate-shake"); }, 450);
+
+                document.getElementById("feedbackBanner").innerHTML =
+                    '<span style="color:#dc2626">' + reasonText + "</span>";
+
+                const jokes = [
+                    "¿Pero qué dices, cabeza de chorlito? 🐦",
+                    "¡Anda, anda, anda! ¡Uy, uy, uy, aquí huelo a borriquito aunque no lo veo! 🫏",
+                    "¡Madre mía del amor hermoso, qué despiste! 🙈",
+                    "¡Ayy, casi te pillo en babia! ¡Despierta, dormilón! 😴",
+                    "¡Epa! ¡Que se te ha escapado el número por la ventana! 🪟"
+                ];
+                const joke = jokes[Math.floor(Math.random() * jokes.length)];
+
+                if (state.phase <= 3) {
+                    const startHint = state.phase === 2 ? state.currentTable + " × 10" : state.currentTable + " × 1";
+                    setTimeout(function () {
+                        openModal("🤪", joke, reasonText + ".\nVolvemos al principio de la tabla del " + state.currentTable + " (" + startHint + ").", [{
+                            text: "Repetir tabla del " + state.currentTable,
+                            full: true,
+                            bg: "#4f46e5",
+                            action: function () {
                                 closeModal();
                                 prepareTableOrder();
                                 loadQuestion();
                             }
-                        }]
-                    );
-                }, 600);
-
-            } else if (state.phase === 4) {
-                // Fase 4: pierde 1 vida; si agota las 3, vuelve al inicio de la Fase 4
-                state.lives--;
-                updateHeartsUI();
-
-                if (state.lives > 0) {
-                    setTimeout(() => {
-                        openModal(
-                            '💔',
-                            randomJoke,
-                            `${reasonText}.\nTe quedan ${state.lives} ${state.lives === 1 ? 'vida' : 'vidas'}. Repetimos la tabla del ${state.currentTable}.`,
-                            [{
-                                text: 'Seguir intentando',
-                                class: 'bg-orange-500 text-white w-full',
-                                action: () => {
+                        }]);
+                    }, 550);
+                } else if (state.phase === 4) {
+                    state.lives--;
+                    updateHeartsUI();
+                    if (state.lives > 0) {
+                        setTimeout(function () {
+                            openModal("💔", joke, reasonText + ".\nTe quedan " + state.lives + (state.lives === 1 ? " vida" : " vidas") + ". Repetimos la tabla del " + state.currentTable + ".", [{
+                                text: "Seguir intentando",
+                                full: true,
+                                bg: "#ea580c",
+                                action: function () {
                                     closeModal();
                                     prepareTableOrder();
                                     loadQuestion();
                                 }
-                            }]
-                        );
-                    }, 600);
-                } else {
-                    setTimeout(() => {
-                        openModal(
-                            '😵',
-                            '¡Sin vidas, cabeza de chorlito!',
-                            'Has agotado tus 3 vidas. ¡No pasa nada! Volvemos al principio de la Fase 4 con las 3 vidas recargadas.',
-                            [{
-                                text: 'Reiniciar Fase 4 ❤️❤️❤️',
-                                class: 'bg-rose-600 text-white w-full',
-                                action: () => {
+                            }]);
+                        }, 550);
+                    } else {
+                        setTimeout(function () {
+                            openModal("😵", "¡Sin vidas, cabeza de chorlito!", "Has agotado tus 3 vidas. Volvemos al principio de la Fase 4 con las 3 vidas recargadas.", [{
+                                text: "Reiniciar Fase 4 ❤️❤️❤️",
+                                full: true,
+                                bg: "#e11d48",
+                                action: function () {
                                     closeModal();
                                     startPhase(4);
                                 }
-                            }]
-                        );
-                    }, 600);
-                }
-
-            } else if (state.phase === 5) {
-                // Fase 5 (Peonza Diabólica): pierde 1 vida; si agota las 3, vuelve al inicio de la Fase 4
-                state.lives--;
-                updateHeartsUI();
-
-                if (state.lives > 0) {
-                    document.getElementById('bossTaunt').textContent = 
-                        `"${randomJoke} ¡JAJAJA! ¡Esa te ha costado una vida!"`;
-                    setTimeout(() => {
-                        openModal(
-                            '🌀',
-                            randomJoke,
-                            `${reasonText}.\nLa Peonza te ha quitado una vida. Te quedan ${state.lives} ${state.lives === 1 ? 'vida' : 'vidas'}. ¡Concentración!`,
-                            [{
-                                text: '¡Seguir luchando!',
-                                class: 'bg-purple-600 text-white w-full',
-                                action: () => {
-                                    closeModal();
-                                    loadQuestion(); // Continúa en el duelo con una vida menos
-                                }
-                            }]
-                        );
-                    }, 600);
+                            }]);
+                        }, 550);
+                    }
                 } else {
-                    setTimeout(() => {
-                        openModal(
-                            '😈',
-                            '¡La Peonza Diabólica ganó esta ronda!',
-                            'Te has quedado sin vidas en la batalla final. Como marca el reto, vuelves al principio de la Fase 4 para entrenar más fuerte.',
-                            [{
-                                text: 'Ir al inicio de la Fase 4 💪',
-                                class: 'bg-indigo-600 text-white w-full',
-                                action: () => {
+                    state.lives--;
+                    updateHeartsUI();
+                    if (state.lives > 0) {
+                        document.getElementById("bossTaunt").textContent = '"' + joke + ' ¡Esa te ha costado una vida!"';
+                        setTimeout(function () {
+                            openModal("🌀", joke, reasonText + ".\nLa Peonza te ha quitado una vida. Te quedan " + state.lives + (state.lives === 1 ? " vida" : " vidas") + ".", [{
+                                text: "¡Seguir luchando!",
+                                full: true,
+                                bg: "#7c3aed",
+                                action: function () {
+                                    closeModal();
+                                    loadQuestion();
+                                }
+                            }]);
+                        }, 550);
+                    } else {
+                        setTimeout(function () {
+                            openModal("😈", "¡La Peonza Diabólica ganó esta ronda!", "Te has quedado sin vidas. Vuelves al principio de la Fase 4 para entrenar más fuerte.", [{
+                                text: "Ir al inicio de la Fase 4 💪",
+                                full: true,
+                                bg: "#4f46e5",
+                                action: function () {
                                     closeModal();
                                     startPhase(4);
                                 }
-                            }]
-                        );
-                    }, 600);
+                            }]);
+                        }, 550);
+                    }
                 }
             }
-        }
 
-        /**
-         * AVANZA AL SIGUIENTE PASO TRAS UN ACIERTO
-         */
-        function advanceAfterCorrect() {
-            if (state.phase <= 4) {
-                state.stepIndex++;
-
-                if (state.stepIndex < 10) {
-                    // Siguiente pregunta de la misma tabla (sin parada intermedia)
-                    loadQuestion();
-                } else {
-                    // Ha completado las 10 preguntas de la tabla actual: ¡PARADA ESPECIAL!
-                    if (state.currentTable < 9) {
-                        const completedTable = state.currentTable;
+            function advanceAfterCorrect() {
+                if (state.phase <= 4) {
+                    state.stepIndex++;
+                    if (state.stepIndex < 10) {
+                        loadQuestion();
+                    } else if (state.currentTable < 9) {
+                        const completed = state.currentTable;
                         state.currentTable++;
-                        const nextTable = state.currentTable;
-                        showTableClearBanner(completedTable, nextTable);
+                        const next = state.currentTable;
+                        showTableClearBanner(completed, next);
                     } else {
-                        // ¡Ha completado hasta la tabla del 9! Mostrar baile y código
                         triggerPhaseCelebration();
                     }
-                }
-            } else {
-                // Fase 5: Peonza Diabólica
-                state.bossIndex++;
-                const taunts = [
-                    '"¡Auch! ¡Ese golpe me ha mareado!"',
-                    '"¡Para ya de acertar, alumno del Antonio Machado!"',
-                    '"¡Mi giro está perdiendo velocidad!"',
-                    '"¡No puede ser! ¡Te sabes todas las tablas!"'
-                ];
-                document.getElementById('bossTaunt').textContent = 
-                    taunts[state.bossIndex % taunts.length];
-
-                if (state.bossIndex < 25) {
-                    loadQuestion();
                 } else {
-                    // ¡VICTORIA FINAL CONTRA LA PEONZA DIABÓLICA!
-                    sfxFanfare();
-                    showScreen('screen-victory');
+                    state.bossIndex++;
+                    const taunts = [
+                        '"¡Auch! ¡Ese golpe me ha mareado!"',
+                        '"¡Para ya de acertar, alumno del Antonio Machado!"',
+                        '"¡Mi giro está perdiendo velocidad!"',
+                        '"¡No puede ser! ¡Te sabes todas las tablas!"'
+                    ];
+                    document.getElementById("bossTaunt").textContent = taunts[state.bossIndex % taunts.length];
+
+                    if (state.bossIndex < 25) {
+                        loadQuestion();
+                    } else {
+                        sfxFanfare();
+                        showScreen("screen-victory");
+                    }
                 }
             }
-        }
 
-        /**
-         * PANTALLA DE BAILE Y ENTREGA DE CÓDIGO DE 4 CIFRAS (TRAS FASES 1, 2, 3 Y 4)
-         */
-        function triggerPhaseCelebration() {
-            sfxFanfare();
-            const nextPhase = state.phase + 1;
-            const code = PHASE_CODES[nextPhase];
+            function showTableClearBanner(completedTable, nextTable) {
+                stopTimer();
+                playTone(523.25, "triangle", 0.1, 0);
+                playTone(659.25, "triangle", 0.1, 0.09);
+                playTone(783.99, "triangle", 0.12, 0.18);
+                playTone(1046.50, "triangle", 0.25, 0.28);
 
-            const dances = {
-                1: ['🕺', '💃', '🤖', '🥳'],
-                2: ['🦖', '🦄', '🐧', '🎉'],
-                3: ['🦸‍♂️', '🦸‍♀️', '🧙‍♂️', '🌟'],
-                4: ['🚀', '🐯', '🎸', '🔥']
-            };
+                const modalIcon = document.getElementById("modalIcon");
+                modalIcon.classList.add("animate-dance");
 
-            const titles = {
-                1: '¡Fase 1 Completada! ¡Menudo baile!',
-                2: '¡Fase 2 Superada hacia atrás!',
-                3: '¡Fase 3 Desordenada Dominada!',
-                4: '¡Fase 4 Superada! ¡Listo para el Jefe Final!'
-            };
-
-            const hints = {
-                2: 'Guarda este código de 4 cifras para entrar directo a la Fase 2 (Hacia atrás).',
-                3: 'Guarda este código de 4 cifras para entrar directo a la Fase 3 (Desordenadas).',
-                4: 'Guarda este código de 4 cifras para entrar directo a la Fase 4 (Escribir número).',
-                5: '¡Código maestro! Con este número podrás retar directamente a la Peonza Diabólica.'
-            };
-
-            document.getElementById('celTitle').textContent = titles[state.phase];
-            document.getElementById('unlockedCodeDisplay').textContent = code;
-            document.getElementById('unlockedCodeHint').textContent = hints[nextPhase];
-
-            const stage = document.getElementById('danceStage');
-            stage.innerHTML = dances[state.phase].map((emoji, i) => 
-                `<span class="animate-dance inline-block" style="animation-delay: ${i * 0.15}s">${emoji}</span>`
-            ).join('');
-
-            const nextBtn = document.getElementById('nextPhaseBtn');
-            if (nextPhase === 5) {
-                nextBtn.textContent = '🌀 ¡Enfrentarme a la Peonza Diabólica!';
-                nextBtn.className = "w-full btn-3d bg-gradient-to-r from-red-600 to-purple-700 text-white font-bold text-xl py-4 px-6 rounded-2xl";
-            } else {
-                nextBtn.textContent = `Continuar a la Fase ${nextPhase} ➡️`;
-                nextBtn.className = "w-full btn-3d bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-xl py-4 px-6 rounded-2xl";
+                openModal(
+                    "🏆",
+                    "¡TABLA DEL " + completedTable + " COMPLETADA!",
+                    "¡Toma ya! Has acertado las 10 seguidas de la tabla del " + completedTable + ".\nTómate un respiro y prepárate para la tabla del " + nextTable + ".",
+                    [{
+                        text: "¡A por la tabla del " + nextTable + "! 🚀",
+                        full: true,
+                        bg: "#10b981",
+                        action: function () {
+                            modalIcon.classList.remove("animate-dance");
+                            closeModal();
+                            prepareTableOrder();
+                            loadQuestion();
+                        }
+                    }]
+                );
             }
 
-            showScreen('screen-celebration');
-        }
+            function triggerPhaseCelebration() {
+                sfxFanfare();
+                const nextPhase = state.phase + 1;
+                const dances = {
+                    1: ["🕺", "💃", "🤖", "🥳"],
+                    2: ["🦖", "🦄", "🐧", "🎉"],
+                    3: ["🦸‍♂️", "🦸‍♀️", "🧙‍♂️", "🌟"],
+                    4: ["🚀", "🐯", "🎸", "🔥"]
+                };
+                const titles = {
+                    1: "¡Fase 1 Completada! ¡Menudo baile!",
+                    2: "¡Fase 2 Superada hacia atrás!",
+                    3: "¡Fase 3 Desordenada Dominada!",
+                    4: "¡Fase 4 Superada! ¡Listo para el Jefe Final!"
+                };
+                const hints = {
+                    2: "Guarda este código de 4 cifras para entrar directo a la Fase 2 (Hacia atrás).",
+                    3: "Guarda este código de 4 cifras para entrar directo a la Fase 3 (Desordenadas).",
+                    4: "Guarda este código de 4 cifras para entrar directo a la Fase 4 (Escribir número).",
+                    5: "¡Código maestro! Con este número podrás retar directamente a la Peonza Diabólica."
+                };
 
-        function goToNextPhase() {
-            startPhase(state.phase + 1);
-        }
+                document.getElementById("celTitle").textContent = titles[state.phase];
+                document.getElementById("unlockedCodeDisplay").textContent = PHASE_CODES[nextPhase];
+                document.getElementById("unlockedCodeHint").textContent = hints[nextPhase];
 
-        /**
-         * NOTIFICACIÓN DE LOGRO AL COMPLETAR UNA TABLA Y PASAR A LA SIGUIENTE
-         */
-        function showTableClearBanner(completedTable, nextTable) {
-            // Detenemos el reloj mientras celebra el cambio de tabla
-            stopTimer();
+                document.getElementById("danceStage").innerHTML = dances[state.phase].map(function (e, i) {
+                    return '<span class="animate-dance" style="animation-delay:' + (i * 0.15) + 's">' + e + "</span>";
+                }).join("");
 
-            // Sonido ascendente de nivel superado
-            playTone(523.25, 'triangle', 0.1, 0);
-            playTone(659.25, 'triangle', 0.1, 0.09);
-            playTone(783.99, 'triangle', 0.12, 0.18);
-            playTone(1046.50, 'triangle', 0.25, 0.28);
+                const nextBtn = document.getElementById("nextPhaseBtn");
+                nextBtn.textContent = nextPhase === 5
+                    ? "🌀 ¡Enfrentarme a la Peonza Diabólica!"
+                    : "Continuar a la Fase " + nextPhase + " ➡️";
 
-            // Animamos el icono del modal con un salto de celebración
-            const modalIcon = document.getElementById('modalIcon');
-            modalIcon.classList.add('animate-dance');
+                showScreen("screen-celebration");
+            }
 
-            openModal(
-                '🏆',
-                `¡TABLA DEL ${completedTable} COMPLETADA!`,
-                `¡Toma ya! Has acertado las 10 seguidas de la tabla del ${completedTable}.\nTómate un respiro y prepárate para la tabla del ${nextTable}.`,
-                [{
-                    text: `¡A por la tabla del ${nextTable}! 🚀`,
-                    class: 'bg-emerald-500 hover:bg-emerald-600 text-white w-full text-lg py-3.5',
-                    action: () => {
-                        modalIcon.classList.remove('animate-dance');
-                        closeModal();
-                        prepareTableOrder();
-                        loadQuestion();
+            /* ENLACE DE EVENTOS AL CARGAR EL DOM */
+            function initApp() {
+                document.getElementById("soundToggle").addEventListener("click", function () {
+                    state.soundEnabled = !state.soundEnabled;
+                    this.textContent = state.soundEnabled ? "🔊" : "🔇";
+                });
+
+                document.getElementById("btnStartPhase1").addEventListener("click", function () {
+                    startPhase(1);
+                });
+
+                document.getElementById("btnUnlockCode").addEventListener("click", function () {
+                    const val = document.getElementById("secretCodeInput").value.trim();
+                    const err = document.getElementById("codeErrorMsg");
+                    err.classList.add("hidden");
+                    let found = null;
+                    Object.keys(PHASE_CODES).forEach(function (k) {
+                        if (PHASE_CODES[k] === val) found = parseInt(k, 10);
+                    });
+                    if (found) {
+                        sfxCorrect();
+                        startPhase(found);
+                    } else {
+                        sfxWrong();
+                        err.classList.remove("hidden");
                     }
-                }]
-            );
-        }
+                });
 
-        /**
-         * UTILIDADES DE INTERFAZ Y ALGORITMOS
-         */
-        function updateHeartsUI() {
-            const full = '❤️'.repeat(Math.max(0, state.lives));
-            const empty = '🖤'.repeat(Math.max(0, 3 - state.lives));
-            document.getElementById('heartsDisplay').textContent = full + empty;
-        }
+                document.getElementById("btnExitGame").addEventListener("click", function () {
+                    stopTimer();
+                    openModal("🏠", "¿Volver al inicio?", "Si sales ahora perderás el progreso de la fase actual.", [
+                        { text: "Seguir jugando", bg: "#e2e8f0", color: "#1e293b", action: function () { closeModal(); startTimer(); } },
+                        { text: "Salir", bg: "#e11d48", color: "#ffffff", action: function () { closeModal(); resetToHome(); } }
+                    ]);
+                });
 
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+                document.getElementById("nextPhaseBtn").addEventListener("click", function () {
+                    startPhase(state.phase + 1);
+                });
+
+                document.getElementById("btnRestartAll").addEventListener("click", resetToHome);
+
+                document.querySelectorAll("[data-key]").forEach(function (btn) {
+                    btn.addEventListener("click", function () {
+                        if (state.isLocked || state.typedInput.length >= 3) return;
+                        state.typedInput += btn.getAttribute("data-key");
+                        document.getElementById("typedAnswerBox").textContent = state.typedInput;
+                        playTone(440, "sine", 0.05, 0);
+                    });
+                });
+
+                document.getElementById("btnKeyClear").addEventListener("click", function () {
+                    if (state.isLocked) return;
+                    state.typedInput = state.typedInput.slice(0, -1);
+                    document.getElementById("typedAnswerBox").textContent = state.typedInput || "_";
+                    playTone(300, "sine", 0.05, 0);
+                });
+
+                document.getElementById("btnKeyOk").addEventListener("click", function () {
+                    if (state.isLocked) return;
+                    if (!state.typedInput) {
+                        const box = document.getElementById("typedAnswerBox");
+                        box.classList.add("animate-shake");
+                        setTimeout(function () { box.classList.remove("animate-shake"); }, 400);
+                        return;
+                    }
+                    handleAnswer(parseInt(state.typedInput, 10));
+                });
             }
-            return array;
-        }
 
-        function openModal(icon, title, message, buttons) {
-            document.getElementById('modalIcon').textContent = icon;
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalMessage').innerText = message;
-
-            const btnContainer = document.getElementById('modalButtons');
-            btnContainer.innerHTML = '';
-            buttons.forEach(b => {
-                const btn = document.createElement('button');
-                btn.className = `btn-3d font-bold py-3 px-5 rounded-xl text-base ${b.class}`;
-                btn.textContent = b.text;
-                btn.onclick = b.action;
-                btnContainer.appendChild(btn);
-            });
-
-            document.getElementById('customModal').classList.remove('hidden');
-        }
-
-        function closeModal() {
-            document.getElementById('customModal').classList.add('hidden');
-        }
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", initApp);
+            } else {
+                initApp();
+            }
+        })();
     </script>
 </body>
 </html>
