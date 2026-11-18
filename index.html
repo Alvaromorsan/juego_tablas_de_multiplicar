@@ -1,442 +1,831 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entrenamiento Matemático - ESO</title>
-    
-    <!-- Cargamos React y ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- Cargamos Babel para entender el código React -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Cargamos Tailwind CSS para el diseño -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Misión Tablas - CEIP Antonio Machado</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
-
-    <!-- Estilos personalizados para las animaciones -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        @keyframes dance { 
-            0%, 100% { transform: translateY(0) rotate(0deg); } 
-            25% { transform: translateY(-20px) rotate(-10deg); } 
-            75% { transform: translateY(-10px) rotate(10deg); } 
-        }
-        @keyframes disco { 
-            0% { background-position: 0% 50%; } 
-            50% { background-position: 100% 50%; } 
-            100% { background-position: 0% 50%; } 
-        }
-        .animal-dance { 
-            animation: dance 0.6s infinite ease-in-out alternate; 
-            font-size: 5rem; 
-            margin: 1rem; 
-            display: inline-block; 
-        }
-        .disco-bg { 
-            background: linear-gradient(270deg, #1a1a2e, #16213e, #4a1c40, #0f3460); 
-            background-size: 600% 600%; 
-            animation: disco 3s ease infinite; 
-        }
         body {
-            background-color: #020617; /* Slate 950 */
-            color: white;
+            font-family: 'Fredoka', sans-serif;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+            overflow-x: hidden;
+        }
+
+        /* Animaciones divertidas para personajes, bailes y la peonza */
+        @keyframes dance {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            25% { transform: translateY(-18px) rotate(-12deg) scale(1.1); }
+            50% { transform: translateY(0) rotate(0deg) scale(0.95); }
+            75% { transform: translateY(-18px) rotate(12deg) scale(1.1); }
+        }
+
+        @keyframes spin-evil {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.08); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes spin-defeated {
+            0% { transform: rotate(0deg) translateY(0); }
+            30% { transform: rotate(720deg) translateY(-40px) scale(1.2); }
+            70% { transform: rotate(1080deg) translateY(20px) scale(0.8); }
+            100% { transform: rotate(1120deg) translateY(10px) rotateZ(45deg) scale(0.85); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        @keyframes pop-in {
+            0% { transform: scale(0.7); opacity: 0; }
+            80% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .animate-dance {
+            animation: dance 0.8s infinite ease-in-out;
+        }
+
+        .animate-evil-top {
+            animation: spin-evil 1.2s infinite linear;
+        }
+
+        .animate-defeated-top {
+            animation: spin-defeated 2s forwards ease-out;
+        }
+
+        .animate-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        .animate-pop {
+            animation: pop-in 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Estilo táctil 3D para botones */
+        .btn-3d {
+            transition: all 0.1s ease;
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+        }
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        /* Fondo con patrón sutil */
+        .bg-classroom {
+            background-color: #f0f9ff;
+            background-image: radial-gradient(#bae6fd 2px, transparent 2px);
+            background-size: 28px 28px;
         }
     </style>
 </head>
-<body>
-    <div id="root"></div>
+<body class="bg-classroom min-h-screen flex flex-col justify-between text-slate-800">
 
+    <!-- CABECERA DEL COLEGIO -->
+    <header class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-3 px-4 shadow-lg rounded-b-3xl">
+        <div class="max-w-xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl sm:text-3xl">🏫</span>
+                <div>
+                    <h1 class="font-bold text-base sm:text-xl leading-tight tracking-wide">CEIP Antonio Machado</h1>
+                    <p class="text-xs sm:text-sm text-blue-100 font-medium">Misión: Tablas del 1 al 9</p>
+                </div>
+            </div>
+            <button id="soundToggle" onclick="toggleSound()" class="bg-white/20 hover:bg-white/30 p-2.5 rounded-2xl text-xl transition" title="Activar/Desactivar Sonido">
+                🔊
+            </button>
+        </div>
+    </header>
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="flex-grow flex items-center justify-center p-3 sm:p-5">
+        <div class="w-full max-w-xl">
 
+            <!-- PANTALLA 1: INICIO Y SELECCIÓN DE FASE / CÓDIGO -->
+            <section id="screen-start" class="bg-white rounded-3xl shadow-xl p-6 sm:p-8 border-4 border-indigo-100 animate-pop text-center">
+                <div class="inline-block bg-amber-100 text-amber-800 font-bold px-4 py-1.5 rounded-full text-sm mb-3">
+                    🚀 ¡Aventura Matemática!
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">¿Listo para superar el reto?</h2>
+                <p class="text-slate-600 text-sm sm:text-base mb-6">
+                    Supera las 5 fases, consigue los <strong>códigos secretos</strong> y derrota a la <strong>Peonza Diabólica</strong>. ¡Tienes 15 segundos por pregunta!
+                </p>
 
-        // --- ICONOS SVG (Simulando Lucide-React) ---
-        const Icon = ({ path, className, size = 24, fill = "none" }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-                {path}
-            </svg>
-        );
+                <!-- Botón empezar desde el principio -->
+                <button onclick="startPhase(1)" class="w-full btn-3d bg-gradient-to-r from-emerald-400 to-green-500 hover:from-emerald-500 hover:to-green-600 text-white font-bold text-xl sm:text-2xl py-4 px-6 rounded-2xl mb-6 flex items-center justify-center gap-3">
+                    <span>▶️</span> Empezar en la Fase 1
+                </button>
 
+                <!-- Mapa rápido de fases -->
+                <div class="grid grid-cols-5 gap-1.5 sm:gap-2 mb-6 text-xs font-bold">
+                    <div class="bg-blue-50 border-2 border-blue-200 p-2 rounded-xl text-blue-700">
+                        <div class="text-lg">1️⃣</div>Orden
+                    </div>
+                    <div class="bg-purple-50 border-2 border-purple-200 p-2 rounded-xl text-purple-700">
+                        <div class="text-lg">2️⃣</div>Al revés
+                    </div>
+                    <div class="bg-pink-50 border-2 border-pink-200 p-2 rounded-xl text-pink-700">
+                        <div class="text-lg">3️⃣</div>Mezcla
+                    </div>
+                    <div class="bg-orange-50 border-2 border-orange-200 p-2 rounded-xl text-orange-700">
+                        <div class="text-lg">4️⃣</div>Escribir
+                    </div>
+                    <div class="bg-red-50 border-2 border-red-200 p-2 rounded-xl text-red-700">
+                        <div class="text-lg">🌀</div>Peonza
+                    </div>
+                </div>
 
-        const Icons = {
-            Play: (props) => <Icon {...props} path={<polygon points="5 3 19 12 5 21 5 3"></polygon>} fill="currentColor" />,
-            Clock: (props) => <Icon {...props} path={<><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></>} />,
-            ChevronRight: (props) => <Icon {...props} path={<polyline points="9 18 15 12 9 6"></polyline>} />,
-            AlertTriangle: (props) => <Icon {...props} path={<><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></>} />,
-            CheckCircle2: (props) => <Icon {...props} path={<><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></>} />,
-            Lock: (props) => <Icon {...props} path={<><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></>} />,
-            Unlock: (props) => <Icon {...props} path={<><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></>} />,
-            Award: (props) => <Icon {...props} path={<><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></>} />,
+                <!-- Caja para introducir código secreto de 4 cifras -->
+                <div class="bg-slate-50 p-4 sm:p-5 rounded-2xl border-2 border-dashed border-slate-300">
+                    <p class="text-sm font-bold text-slate-700 mb-3">🔑 ¿Tienes un código secreto de 4 cifras?</p>
+                    <div class="flex flex-col sm:flex-row gap-2 justify-center items-center">
+                        <input id="secretCodeInput" type="tel" maxlength="4" placeholder="Ej: 1234" 
+                            class="w-full sm:w-44 text-center text-2xl font-bold tracking-widest py-3 px-4 rounded-xl border-2 border-indigo-200 focus:border-indigo-500 focus:outline-none bg-white">
+                        <button onclick="checkSecretCode()" class="w-full sm:w-auto btn-3d bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-6 rounded-xl text-base">
+                            Desbloquear Fase
+                        </button>
+                    </div>
+                    <p id="codeErrorMsg" class="text-red-500 text-sm font-bold mt-2 hidden">❌ Código incorrecto. ¡Revisa los 4 números!</p>
+                </div>
+            </section>
+
+            <!-- PANTALLA 2: ÁREA DE JUEGO -->
+            <section id="screen-game" class="hidden bg-white rounded-3xl shadow-xl p-4 sm:p-6 border-4 border-indigo-100">
+                
+                <!-- Barra superior de estado: Fase, Progreso y Vidas -->
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-3 border-b-2 border-slate-100">
+                    <div>
+                        <span id="phaseBadge" class="bg-indigo-100 text-indigo-800 font-bold px-3 py-1 rounded-full text-xs sm:text-sm">
+                            Fase 1: En orden
+                        </span>
+                        <div id="tableProgressText" class="text-sm sm:text-base font-bold text-slate-700 mt-1">
+                            Tabla del 1 (1 / 10)
+                        </div>
+                    </div>
+
+                    <!-- Vidas (visible en Fase 4 y Fase 5) -->
+                    <div id="livesContainer" class="hidden flex items-center gap-1 bg-red-50 px-3 py-1.5 rounded-2xl border border-red-200">
+                        <span class="text-xs font-bold text-red-700 mr-1">Vidas:</span>
+                        <span id="heartsDisplay" class="text-lg sm:text-xl tracking-wider">❤️❤️❤️</span>
+                    </div>
+
+                    <!-- Botón salir al menú -->
+                    <button onclick="confirmExit()" class="text-slate-400 hover:text-slate-600 font-bold text-sm bg-slate-100 px-3 py-1.5 rounded-xl">
+                        🏠 Inicio
+                    </button>
+                </div>
+
+                <!-- Barra de progreso general de la fase -->
+                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-4">
+                    <div id="overallProgressBar" class="bg-indigo-500 h-full transition-all duration-300" style="width: 10%"></div>
+                </div>
+
+                <!-- RELOJ / BARRA DE TIEMPO (15 SEGUNDOS) -->
+                <div class="mb-4">
+                    <div class="flex justify-between items-center text-xs sm:text-sm font-bold mb-1">
+                        <span class="text-slate-500 flex items-center gap-1">⏱️ Tiempo restante</span>
+                        <span id="timerText" class="text-emerald-600 text-base">15.0s</span>
+                    </div>
+                    <div class="w-full bg-slate-200 h-4 rounded-full overflow-hidden p-0.5 shadow-inner">
+                        <div id="timerBar" class="bg-emerald-500 h-full rounded-full transition-all duration-100 ease-linear" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <!-- MONSTRUO FINAL: PEONZA DIABÓLICA (Solo visible en Fase 5) -->
+                <div id="bossArena" class="hidden bg-gradient-to-b from-slate-900 to-purple-950 text-white rounded-2xl p-4 mb-4 text-center relative overflow-hidden border-2 border-purple-500">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-xs font-bold uppercase tracking-wider text-purple-300">😈 Jefe Final</span>
+                        <span id="bossHpText" class="text-xs font-bold text-amber-300">Energía: 25 / 25</span>
+                    </div>
+                    <div class="w-full bg-slate-700 h-3 rounded-full overflow-hidden mb-3">
+                        <div id="bossHpBar" class="bg-gradient-to-r from-red-500 to-amber-500 h-full transition-all duration-300" style="width: 100%"></div>
+                    </div>
+                    
+                    <!-- SVG Peonza Diabólica -->
+                    <div class="flex justify-center items-center py-1">
+                        <div id="evilTopGraphic" class="animate-evil-top inline-block">
+                            <svg width="84" height="84" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Corona / Agarre superior -->
+                                <rect x="42" y="6" width="16" height="14" rx="4" fill="#F59E0B" stroke="#78350F" stroke-width="3"/>
+                                <!-- Cuerpo de la peonza -->
+                                <path d="M15 35 C15 20, 85 20, 85 35 L55 82 C52 87, 48 87, 45 82 Z" fill="url(#topGrad)" stroke="#4C1D95" stroke-width="3"/>
+                                <!-- Franjas hipnóticas -->
+                                <path d="M22 42 Q50 52 78 42" stroke="#FBBF24" stroke-width="4" stroke-linecap="round"/>
+                                <path d="M32 58 Q50 66 68 58" stroke="#F43F5E" stroke-width="4" stroke-linecap="round"/>
+                                <!-- Ojos diabólicos -->
+                                <polygon points="32,30 44,35 34,39" fill="#FEF08A"/>
+                                <polygon points="68,30 56,35 66,39" fill="#FEF08A"/>
+                                <!-- Punta metálica -->
+                                <path d="M46 84 L50 96 L54 84 Z" fill="#CBD5E1" stroke="#475569" stroke-width="2"/>
+                                <defs>
+                                    <linearGradient id="topGrad" x1="15" y1="20" x2="85" y2="85" gradientUnits="userSpaceOnUse">
+                                        <stop stop-color="#9333EA"/>
+                                        <stop offset="0.5" stop-color="#DC2626"/>
+                                        <stop offset="1" stop-color="#4F46E5"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+                    <p id="bossTaunt" class="text-xs sm:text-sm text-purple-200 font-medium mt-1">
+                        "¡Gira que te gira! ¡Nunca acertarás mis 25 multiplicaciones!"
+                    </p>
+                </div>
+
+                <!-- TARJETA DE LA PREGUNTA -->
+                <div id="questionCard" class="bg-gradient-to-br from-indigo-50 to-blue-50 border-2 border-indigo-200 rounded-2xl p-5 sm:p-6 text-center mb-5 relative">
+                    <div id="questionPrompt" class="text-4xl sm:text-6xl font-bold text-slate-800 tracking-wide">
+                        3 × 4 = <span class="text-indigo-600">?</span>
+                    </div>
+                    <!-- Mensaje de feedback instantáneo -->
+                    <div id="feedbackBanner" class="mt-2 h-6 text-sm sm:text-base font-bold"></div>
+                </div>
+
+                <!-- MODO A: 6 OPCIONES A ELEGIR (Fases 1, 2 y 3) -->
+                <div id="optionsGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <!-- Se rellena dinámicamente con botones grandes -->
+                </div>
+
+                <!-- MODO B: HUECO + TECLADO NUMÉRICO TÁCTIL (Fases 4 y 5) -->
+                <div id="keypadArea" class="hidden">
+                    <!-- Visor del número escrito -->
+                    <div class="flex justify-center mb-3">
+                        <div id="typedAnswerBox" class="w-48 h-14 bg-slate-100 border-4 border-indigo-400 rounded-2xl flex items-center justify-center text-3xl sm:text-4xl font-bold text-indigo-700 shadow-inner">
+                            _
+                        </div>
+                    </div>
+
+                    <!-- Teclado numérico grande para tablets/móviles -->
+                    <div class="grid grid-cols-3 gap-2 max-w-sm mx-auto">
+                        <button onclick="pressKey('1')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">1</button>
+                        <button onclick="pressKey('2')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">2</button>
+                        <button onclick="pressKey('3')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">3</button>
+                        <button onclick="pressKey('4')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">4</button>
+                        <button onclick="pressKey('5')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">5</button>
+                        <button onclick="pressKey('6')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">6</button>
+                        <button onclick="pressKey('7')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">7</button>
+                        <button onclick="pressKey('8')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">8</button>
+                        <button onclick="pressKey('9')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">9</button>
+                        <button onclick="clearKey()" class="btn-3d bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold text-lg py-3.5 rounded-2xl">⌫ Borrar</button>
+                        <button onclick="pressKey('0')" class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-2xl py-3.5 rounded-2xl">0</button>
+                        <button onclick="submitTypedAnswer()" class="btn-3d bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-lg py-3.5 rounded-2xl">✅ Listo</button>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- PANTALLA 3: CELEBRACIÓN INTERMEDIA, BAILE Y CÓDIGO SECRETO -->
+            <section id="screen-celebration" class="hidden bg-white rounded-3xl shadow-xl p-6 sm:p-8 border-4 border-amber-200 text-center animate-pop">
+                <div class="inline-block bg-emerald-100 text-emerald-800 font-bold px-4 py-1 rounded-full text-sm mb-3">
+                    🎉 ¡FASE SUPERADA!
+                </div>
+                <h2 id="celTitle" class="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
+                    ¡Increíble trabajo!
+                </h2>
+                <p id="celSubtitle" class="text-slate-600 mb-5 text-sm sm:text-base">
+                    Has completado todas las tablas de esta fase. ¡Mira cómo bailan tus compañeros!
+                </p>
+
+                <!-- Escenario de baile animado -->
+                <div id="danceStage" class="bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 border-2 border-amber-200 rounded-2xl py-6 px-4 mb-6 flex justify-center items-center gap-4 sm:gap-6 text-5xl sm:text-6xl">
+                    <!-- Se rellena con bailarines diferentes según la fase -->
+                </div>
+
+                <!-- Tarjeta del código secreto de 4 cifras -->
+                <div class="bg-indigo-600 text-white rounded-2xl p-5 mb-6 shadow-lg">
+                    <p class="text-xs sm:text-sm uppercase tracking-wider text-indigo-200 font-bold mb-1">
+                        🔑 Apunta este código secreto de 4 cifras
+                    </p>
+                    <div id="unlockedCodeDisplay" class="text-4xl sm:text-5xl font-bold tracking-widest my-2 text-amber-300">
+                        2841
+                    </div>
+                    <p id="unlockedCodeHint" class="text-xs text-indigo-100">
+                        Con este número podrás entrar directamente a la Fase 2 la próxima vez.
+                    </p>
+                </div>
+
+                <button id="nextPhaseBtn" onclick="goToNextPhase()" class="w-full btn-3d bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold text-xl py-4 px-6 rounded-2xl">
+                    Continuar a la siguiente fase ➡️
+                </button>
+            </section>
+
+            <!-- PANTALLA 4: VICTORIA FINAL CONTRA LA PEONZA DIABÓLICA -->
+            <section id="screen-victory" class="hidden bg-white rounded-3xl shadow-xl p-6 sm:p-8 border-4 border-yellow-300 text-center animate-pop">
+                <div class="text-5xl mb-2">🏆👑🏆</div>
+                <h2 class="text-2xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 mb-2">
+                    ¡ENHORABUENA, CAMPEÓN / CAMPEONA!
+                </h2>
+                <p class="text-slate-700 font-medium text-base sm:text-lg mb-4">
+                    ¡Has derrotado a la <strong>Peonza Diabólica</strong> y dominas todas las tablas del 1 al 9 del <strong>CEIP Antonio Machado</strong>!
+                </p>
+
+                <!-- Animación de la peonza derrotada mareada + baile final -->
+                <div class="bg-slate-900 rounded-2xl p-6 mb-6 text-white relative overflow-hidden">
+                    <div class="flex justify-center items-center gap-6">
+                        <span class="text-5xl animate-dance">🥳</span>
+                        <div class="animate-defeated-top inline-block">
+                            <svg width="90" height="90" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="42" y="6" width="16" height="14" rx="4" fill="#F59E0B" stroke="#78350F" stroke-width="3"/>
+                                <path d="M15 35 C15 20, 85 20, 85 35 L55 82 C52 87, 48 87, 45 82 Z" fill="#64748B" stroke="#334155" stroke-width="3"/>
+                                <!-- Ojos mareados en X -->
+                                <text x="28" y="42" fill="#FEF08A" font-size="16" font-weight="bold">✖</text>
+                                <text x="58" y="42" fill="#FEF08A" font-size="16" font-weight="bold">✖</text>
+                                <path d="M46 84 L50 96 L54 84 Z" fill="#CBD5E1"/>
+                            </svg>
+                        </div>
+                        <span class="text-5xl animate-dance">💃</span>
+                    </div>
+                    <p class="text-amber-300 font-bold text-sm mt-4">
+                        🌀 "¡Noooo! ¡Me has dejado sin energía matemática! ¡Eres demasiado rápido!"
+                    </p>
+                </div>
+
+                <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4 mb-6 text-emerald-800 font-bold text-sm sm:text-base">
+                    🎓 Diploma Desbloqueado: Experto/a en Multiplicaciones de 3.º de Primaria
+                </div>
+
+                <button onclick="resetToHome()" class="w-full btn-3d bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xl py-4 px-6 rounded-2xl">
+                    🔄 Volver al inicio
+                </button>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- MODAL PERSONALIZADO (Sustituye a alert/confirm) -->
+    <div id="customModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl border-4 border-indigo-100 animate-pop">
+            <div id="modalIcon" class="text-5xl mb-3">⚠️</div>
+            <h3 id="modalTitle" class="text-xl font-bold text-slate-800 mb-2">Título</h3>
+            <p id="modalMessage" class="text-slate-600 text-sm sm:text-base mb-6">Mensaje</p>
+            <div id="modalButtons" class="flex gap-3 justify-center">
+                <!-- Botones dinámicos -->
+            </div>
+        </div>
+    </div>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="text-center py-3 text-xs text-slate-500 font-medium">
+        CEIP Antonio Machado • Aprendiendo las tablas jugando 🌟
+    </footer>
+
+    <script>
+        /**
+         * CONFIGURACIÓN Y ESTADO GLOBAL DE LA APLICACIÓN
+         */
+        const PHASE_CODES = {
+            2: "2486", // Código para desbloquear Fase 2
+            3: "5193", // Código para desbloquear Fase 3
+            4: "7364", // Código para desbloquear Fase 4
+            5: "9518"  // Código para desbloquear Fase 5 (Peonza Diabólica)
         };
 
+        const QUESTION_TIME_LIMIT = 15.0; // 15 segundos por pregunta
 
-        // --- APLICACIÓN PRINCIPAL ---
+        let state = {
+            phase: 1,               // 1, 2, 3, 4 o 5
+            currentTable: 1,        // Tabla actual (1 a 9)
+            stepIndex: 0,           // Índice de pregunta dentro de la tabla actual (0 a 9)
+            multipliersOrder: [],   // Array con el orden de multiplicadores [1..10]
+            bossQuestions: [],      // Array de 25 preguntas {a, b} para la Fase 5
+            bossIndex: 0,           // Índice actual en la Fase 5 (0 a 24)
+            lives: 3,               // Vidas para Fase 4 y Fase 5
+            currentA: 1,            // Factor A actual
+            currentB: 1,            // Factor B actual
+            correctAnswer: 1,       // Respuesta correcta actual
+            typedInput: "",         // Texto escrito en fases 4 y 5
+            timerInterval: null,    // Referencia al temporizador
+            timeLeft: 15.0,         // Tiempo restante en segundos
+            isLocked: false,        // Bloquea pulsaciones mientras se muestra feedback
+            soundEnabled: true      // Efectos de sonido Web Audio API
+        };
 
+        /**
+         * SISTEMA DE EFECTOS DE SONIDO SINTETIZADOS (SIN ARCHIVOS EXTERNOS)
+         */
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
 
-        function App() {
-            // --- Estados Principales ---
-            const [gameState, setGameState] = useState('start'); 
-            const [currentTable, setCurrentTable] = useState(1);
-            const [currentStep, setCurrentStep] = useState(1);
-            const [timer, setTimer] = useState(5.0);
-            const [feedback, setFeedback] = useState(null);
-            
-            const [options, setOptions] = useState([]);
-            
-            const timerInterval = useRef(null);
+        function playTone(freq, type, duration, delay = 0) {
+            if (!state.soundEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new AudioCtx();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
 
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
 
-            // --- Lógica ---
-            
-            const generateOptions = (table, step) => {
-                const correct = table * step;
-                const opts = new Set([correct]);
-                
-                while (opts.size < 5) {
-                    const strategy = Math.random();
-                    let fake;
-                    
-                    if (strategy < 0.4) {
-                        const offset = Math.floor(Math.random() * 5) + 1;
-                        fake = correct + (Math.random() > 0.5 ? offset : -offset);
-                    } else if (strategy < 0.7) {
-                        const fakeStep = Math.floor(Math.random() * 10) + 1;
-                        fake = table * fakeStep;
-                    } else {
-                        fake = correct + Math.floor(Math.random() * 20) - 10;
-                    }
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime + delay);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + duration);
 
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
 
-                    if (fake > 0 && fake !== correct) {
-                        opts.add(fake);
-                    }
+                osc.start(audioCtx.currentTime + delay);
+                osc.stop(audioCtx.currentTime + delay + duration);
+            } catch (e) {
+                // Ignorar si el navegador bloquea audio antes de interacción
+            }
+        }
+
+        function sfxCorrect() {
+            playTone(523.25, 'sine', 0.12, 0);    // Do5
+            playTone(659.25, 'sine', 0.18, 0.08); // Mi5
+        }
+
+        function sfxWrong() {
+            playTone(220, 'sawtooth', 0.2, 0);
+            playTone(175, 'sawtooth', 0.3, 0.15);
+        }
+
+        function sfxFanfare() {
+            const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+            notes.forEach((n, idx) => playTone(n, 'triangle', 0.18, idx * 0.12));
+        }
+
+        function toggleSound() {
+            state.soundEnabled = !state.soundEnabled;
+            document.getElementById('soundToggle').textContent = state.soundEnabled ? '🔊' : '🔇';
+        }
+
+        /**
+         * TEMPORIZADOR DE 15 SEGUNDOS POR PREGUNTA
+         */
+        function startTimer() {
+            stopTimer();
+            state.timeLeft = QUESTION_TIME_LIMIT;
+            updateTimerUI();
+
+            state.timerInterval = setInterval(() => {
+                state.timeLeft = Math.max(0, state.timeLeft - 0.1);
+                updateTimerUI();
+
+                if (state.timeLeft <= 0) {
+                    stopTimer();
+                    handleTimeout();
                 }
-                return Array.from(opts).sort(() => Math.random() - 0.5);
-            };
+            }, 100);
+        }
 
+        function stopTimer() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+        }
 
-            const startGame = () => {
-                setCurrentTable(1);
-                setCurrentStep(1);
-                loadLevel(1, 1);
-                setGameState('playing');
-            };
+        function updateTimerUI() {
+            const pct = (state.timeLeft / QUESTION_TIME_LIMIT) * 100;
+            const bar = document.getElementById('timerBar');
+            const text = document.getElementById('timerText');
 
+            bar.style.width = `${pct}%`;
+            text.textContent = `${state.timeLeft.toFixed(1)}s`;
 
-            const nextTable = () => {
-                const nextT = currentTable + 1;
-                if (nextT > 10) {
-                    setGameState('game_finished');
-                } else {
-                    setCurrentTable(nextT);
-                    setCurrentStep(1);
-                    loadLevel(nextT, 1);
-                    setGameState('playing');
-                }
-            };
+            if (state.timeLeft > 7.5) {
+                bar.className = "bg-emerald-500 h-full rounded-full transition-all duration-100 ease-linear";
+                text.className = "text-emerald-600 text-base font-bold";
+            } else if (state.timeLeft > 3.5) {
+                bar.className = "bg-amber-500 h-full rounded-full transition-all duration-100 ease-linear";
+                text.className = "text-amber-600 text-base font-bold";
+            } else {
+                bar.className = "bg-rose-500 h-full rounded-full transition-all duration-100 ease-linear";
+                text.className = "text-rose-600 text-base font-bold animate-pulse";
+            }
+        }
 
+        /**
+         * LÓGICA AL RESPONDER O AGOTARSE EL TIEMPO
+         */
+        function handleAnswer(selectedValue) {
+            if (state.isLocked) return;
+            state.isLocked = true;
+            stopTimer();
 
-            const loadLevel = (table, step) => {
-                setTimer(5.0);
-                setFeedback(null);
-                setOptions(generateOptions(table, step));
-            };
+            if (selectedValue === state.correctAnswer) {
+                // ¡ACIERTO!
+                sfxCorrect();
+                document.getElementById('questionPrompt').innerHTML = 
+                    `${state.currentA} × ${state.currentB} = <span class="text-emerald-600">${state.correctAnswer}</span>`;
+                document.getElementById('feedbackBanner').innerHTML = 
+                    `<span class="text-emerald-600">✨ ¡Genial! ¡Muy bien!</span>`;
 
+                setTimeout(() => {
+                    advanceAfterCorrect();
+                }, 650);
+            } else {
+                // FALLO
+                processMistake(`❌ ¡Ups! ${state.currentA} × ${state.currentB} era ${state.correctAnswer}`);
+            }
+        }
 
-            const handleAnswer = (val) => {
-                clearInterval(timerInterval.current);
-                const correct = currentTable * currentStep;
-                
-                if (val === correct) {
-                    setFeedback({ type: 'correct', correctVal: correct });
-                } else {
-                    setFeedback({ type: 'incorrect', correctVal: correct });
-                }
-                setGameState('feedback');
-            };
+        function handleTimeout() {
+            if (state.isLocked) return;
+            state.isLocked = true;
+            processMistake(`⏰ ¡Se acabó el tiempo! Era ${state.correctAnswer}`);
+        }
 
+        function processMistake(reasonText) {
+            sfxWrong();
+            const card = document.getElementById('questionCard');
+            card.classList.add('animate-shake');
+            setTimeout(() => card.classList.remove('animate-shake'), 450);
 
-            const handleTimeout = () => {
-                clearInterval(timerInterval.current);
-                setFeedback({ type: 'timeout', correctVal: currentTable * currentStep });
-                setGameState('feedback');
-            };
+            document.getElementById('feedbackBanner').innerHTML = 
+                `<span class="text-rose-600">${reasonText}</span>`;
 
+            const funnyPhrases = [
+                "¿Pero qué dices, cabeza de chorlito? 🐦",
+                "¡Anda, anda, anda! ¡Uy, uy, uy, aquí huelo a borriquito aunque no lo veo! 🫏",
+                "¡Madre mía del amor hermoso, qué despiste! 🙈",
+                "¡Ayy, casi te pillo en babia! ¡Despierta, dormilón! 😴",
+                "¡Epa! ¡Que se te ha escapado el número por la ventana! 🪟",
+                "¡Uy, uy, uy! ¡Esa calculadora mental necesita un poco de aceite! ⚙️"
+            ];
+            const randomJoke = funnyPhrases[Math.floor(Math.random() * funnyPhrases.length)];
 
-            const processProgression = () => {
-                if (feedback.type === 'correct') {
-                    if (currentStep === 10) {
-                        setGameState('table_completed');
-                    } else {
-                        const nextS = currentStep + 1;
-                        setCurrentStep(nextS);
-                        loadLevel(currentTable, nextS);
-                        setGameState('playing');
-                    }
-                } else {
-                    const nextS = Math.max(1, currentStep - 1);
-                    setCurrentStep(nextS);
-                    loadLevel(currentTable, nextS);
-                    setGameState('playing');
-                }
-            };
-
-
-            useEffect(() => {
-                if (gameState === 'playing') {
-                    timerInterval.current = setInterval(() => {
-                        setTimer(t => {
-                            if (t <= 0.1) {
-                                handleTimeout();
-                                return 0;
+            if (state.phase <= 3) {
+                // Fases 1, 2 y 3: vuelve al inicio de esa misma tabla
+                const startHint = state.phase === 2 ? `${state.currentTable} × 10` : `${state.currentTable} × 1`;
+                setTimeout(() => {
+                    openModal(
+                        '🤪',
+                        randomJoke,
+                        `${reasonText}.\nVolvemos al principio de la tabla del ${state.currentTable} (${startHint}) para practicarla bien.`,
+                        [{
+                            text: `Repetir tabla del ${state.currentTable}`,
+                            class: 'bg-indigo-600 text-white w-full',
+                            action: () => {
+                                closeModal();
+                                prepareTableOrder();
+                                loadQuestion();
                             }
-                            return t - 0.1;
-                        });
-                    }, 100);
+                        }]
+                    );
+                }, 600);
+
+            } else if (state.phase === 4) {
+                // Fase 4: pierde 1 vida; si agota las 3, vuelve al inicio de la Fase 4
+                state.lives--;
+                updateHeartsUI();
+
+                if (state.lives > 0) {
+                    setTimeout(() => {
+                        openModal(
+                            '💔',
+                            randomJoke,
+                            `${reasonText}.\nTe quedan ${state.lives} ${state.lives === 1 ? 'vida' : 'vidas'}. Repetimos la tabla del ${state.currentTable}.`,
+                            [{
+                                text: 'Seguir intentando',
+                                class: 'bg-orange-500 text-white w-full',
+                                action: () => {
+                                    closeModal();
+                                    prepareTableOrder();
+                                    loadQuestion();
+                                }
+                            }]
+                        );
+                    }, 600);
+                } else {
+                    setTimeout(() => {
+                        openModal(
+                            '😵',
+                            '¡Sin vidas, cabeza de chorlito!',
+                            'Has agotado tus 3 vidas. ¡No pasa nada! Volvemos al principio de la Fase 4 con las 3 vidas recargadas.',
+                            [{
+                                text: 'Reiniciar Fase 4 ❤️❤️❤️',
+                                class: 'bg-rose-600 text-white w-full',
+                                action: () => {
+                                    closeModal();
+                                    startPhase(4);
+                                }
+                            }]
+                        );
+                    }, 600);
                 }
-                return () => clearInterval(timerInterval.current);
-            }, [gameState]);
 
+            } else if (state.phase === 5) {
+                // Fase 5 (Peonza Diabólica): pierde 1 vida; si agota las 3, vuelve al inicio de la Fase 4
+                state.lives--;
+                updateHeartsUI();
 
-            useEffect(() => {
-                if (gameState === 'feedback') {
-                    const delay = feedback.type === 'correct' ? 800 : 2500;
-                    const timeout = setTimeout(() => {
-                        processProgression();
-                    }, delay);
-                    return () => clearTimeout(timeout);
+                if (state.lives > 0) {
+                    document.getElementById('bossTaunt').textContent = 
+                        `"${randomJoke} ¡JAJAJA! ¡Esa te ha costado una vida!"`;
+                    setTimeout(() => {
+                        openModal(
+                            '🌀',
+                            randomJoke,
+                            `${reasonText}.\nLa Peonza te ha quitado una vida. Te quedan ${state.lives} ${state.lives === 1 ? 'vida' : 'vidas'}. ¡Concentración!`,
+                            [{
+                                text: '¡Seguir luchando!',
+                                class: 'bg-purple-600 text-white w-full',
+                                action: () => {
+                                    closeModal();
+                                    loadQuestion(); // Continúa en el duelo con una vida menos
+                                }
+                            }]
+                        );
+                    }, 600);
+                } else {
+                    setTimeout(() => {
+                        openModal(
+                            '😈',
+                            '¡La Peonza Diabólica ganó esta ronda!',
+                            'Te has quedado sin vidas en la batalla final. Como marca el reto, vuelves al principio de la Fase 4 para entrenar más fuerte.',
+                            [{
+                                text: 'Ir al inicio de la Fase 4 💪',
+                                class: 'bg-indigo-600 text-white w-full',
+                                action: () => {
+                                    closeModal();
+                                    startPhase(4);
+                                }
+                            }]
+                        );
+                    }, 600);
                 }
-            }, [gameState, feedback]);
+            }
+        }
 
+        /**
+         * AVANZA AL SIGUIENTE PASO TRAS UN ACIERTO
+         */
+        function advanceAfterCorrect() {
+            if (state.phase <= 4) {
+                state.stepIndex++;
 
-            // --- Componentes Visuales ---
+                if (state.stepIndex < 10) {
+                    // Siguiente pregunta de la misma tabla (sin parada intermedia)
+                    loadQuestion();
+                } else {
+                    // Ha completado las 10 preguntas de la tabla actual: ¡PARADA ESPECIAL!
+                    if (state.currentTable < 9) {
+                        const completedTable = state.currentTable;
+                        state.currentTable++;
+                        const nextTable = state.currentTable;
+                        showTableClearBanner(completedTable, nextTable);
+                    } else {
+                        // ¡Ha completado hasta la tabla del 9! Mostrar baile y código
+                        triggerPhaseCelebration();
+                    }
+                }
+            } else {
+                // Fase 5: Peonza Diabólica
+                state.bossIndex++;
+                const taunts = [
+                    '"¡Auch! ¡Ese golpe me ha mareado!"',
+                    '"¡Para ya de acertar, alumno del Antonio Machado!"',
+                    '"¡Mi giro está perdiendo velocidad!"',
+                    '"¡No puede ser! ¡Te sabes todas las tablas!"'
+                ];
+                document.getElementById('bossTaunt').textContent = 
+                    taunts[state.bossIndex % taunts.length];
 
+                if (state.bossIndex < 25) {
+                    loadQuestion();
+                } else {
+                    // ¡VICTORIA FINAL CONTRA LA PEONZA DIABÓLICA!
+                    sfxFanfare();
+                    showScreen('screen-victory');
+                }
+            }
+        }
 
-            const ProgressBarVertical = () => (
-                <div className="flex flex-col items-center justify-center h-full gap-1 bg-slate-800 p-2 rounded-xl border border-slate-700">
-                <span className="text-xs text-slate-400 font-bold mb-2 uppercase tracking-wider hidden md:block">Progreso</span>
-                {[10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map(step => (
-                    <div 
-                    key={step}
-                    className={`
-                        w-10 h-8 md:w-16 md:h-10 rounded flex items-center justify-center text-sm font-bold transition-all duration-300
-                        ${currentStep === step 
-                        ? 'bg-blue-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.6)] scale-110 z-10 border border-blue-300' 
-                        : currentStep > step 
-                            ? 'bg-emerald-900/50 text-emerald-500 border border-emerald-800' 
-                            : 'bg-slate-900 text-slate-600 border border-slate-800'}
-                    `}
-                    >
-                    x{step}
-                    </div>
-                ))}
-                </div>
-            );
+        /**
+         * PANTALLA DE BAILE Y ENTREGA DE CÓDIGO DE 4 CIFRAS (TRAS FASES 1, 2, 3 Y 4)
+         */
+        function triggerPhaseCelebration() {
+            sfxFanfare();
+            const nextPhase = state.phase + 1;
+            const code = PHASE_CODES[nextPhase];
 
+            const dances = {
+                1: ['🕺', '💃', '🤖', '🥳'],
+                2: ['🦖', '🦄', '🐧', '🎉'],
+                3: ['🦸‍♂️', '🦸‍♀️', '🧙‍♂️', '🌟'],
+                4: ['🚀', '🐯', '🎸', '🔥']
+            };
 
-            const TablesSidebar = () => (
-                <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-visible p-2 bg-slate-900/50 md:h-full rounded-xl border border-slate-800 items-center md:items-stretch">
-                <span className="text-xs text-slate-400 font-bold md:mb-2 uppercase tracking-wider px-2">Tablas</span>
-                {[1,2,3,4,5,6,7,8,9,10].map(t => (
-                    <div key={t} className={`
-                        flex items-center justify-between p-2 rounded min-w-[80px] md:min-w-0
-                        ${currentTable === t ? 'bg-blue-900/40 border border-blue-500/50 text-blue-200' : 
-                        currentTable > t ? 'bg-emerald-900/20 border border-emerald-900 text-emerald-600' : 'opacity-40 text-slate-600'}
-                    `}>
-                    <span className="font-bold text-sm">T. del {t}</span>
-                    {currentTable > t ? <Icons.CheckCircle2 size={14} /> : currentTable === t ? <Icons.Unlock size={14}/> : <Icons.Lock size={14}/>}
-                    </div>
-                ))}
-                </div>
-            );
+            const titles = {
+                1: '¡Fase 1 Completada! ¡Menudo baile!',
+                2: '¡Fase 2 Superada hacia atrás!',
+                3: '¡Fase 3 Desordenada Dominada!',
+                4: '¡Fase 4 Superada! ¡Listo para el Jefe Final!'
+            };
 
+            const hints = {
+                2: 'Guarda este código de 4 cifras para entrar directo a la Fase 2 (Hacia atrás).',
+                3: 'Guarda este código de 4 cifras para entrar directo a la Fase 3 (Desordenadas).',
+                4: 'Guarda este código de 4 cifras para entrar directo a la Fase 4 (Escribir número).',
+                5: '¡Código maestro! Con este número podrás retar directamente a la Peonza Diabólica.'
+            };
 
-            const AnimalParty = () => (
-                <div className="fixed inset-0 disco-bg z-50 flex flex-col items-center justify-center overflow-hidden">
-                <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 animate-pulse mb-8 text-center px-4">
-                    ¡MAESTRO DE LAS TABLAS!
-                </h1>
-                
-                <div className="flex flex-wrap justify-center gap-4 md:gap-8 max-w-4xl">
-                    {['🦁','🐯','🐨','🐼','🐸','🐵','🦄','🦖','🐙','🦊'].map((a, i) => (
-                    <div key={i} className="animal-dance" style={{ animationDelay: `${i * 0.1}s` }}>{a}</div>
-                    ))}
-                </div>
-                
-                <div className="mt-12 p-6 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 text-center mx-4">
-                    <p className="text-white text-xl mb-4">Has superado las 10 tablas con éxito.</p>
-                    <button onClick={() => window.location.reload()} className="bg-white text-black font-bold py-3 px-8 rounded-full hover:scale-105 transition flex items-center gap-2 mx-auto">
-                    <Icons.Play size={20} /> Volver a empezar
-                    </button>
-                </div>
-                </div>
-            );
+            document.getElementById('celTitle').textContent = titles[state.phase];
+            document.getElementById('unlockedCodeDisplay').textContent = code;
+            document.getElementById('unlockedCodeHint').textContent = hints[nextPhase];
 
+            const stage = document.getElementById('danceStage');
+            stage.innerHTML = dances[state.phase].map((emoji, i) => 
+                `<span class="animate-dance inline-block" style="animation-delay: ${i * 0.15}s">${emoji}</span>`
+            ).join('');
 
-            // --- Vistas ---
-
-
-            if (gameState === 'game_finished') return <AnimalParty />;
-
-
-            if (gameState === 'start') {
-                return (
-                <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 font-sans text-slate-200">
-                    <div className="max-w-md w-full bg-slate-900 p-8 rounded-2xl border border-slate-800 shadow-2xl text-center">
-                    <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(37,99,235,0.5)]">
-                        <Icons.Award size={40} className="text-white" />
-                    </div>
-                    <h1 className="text-3xl font-bold mb-2 text-white">Entrenamiento Matemático</h1>
-                    <h2 className="text-blue-500 font-bold tracking-widest uppercase text-sm mb-6">Nivel ESO - Tablas 1 al 10</h2>
-                    
-                    <div className="space-y-4 text-left bg-slate-800/50 p-4 rounded-lg mb-8 text-sm text-slate-400">
-                        <p className="flex items-center gap-2"><Icons.Clock size={16} className="text-red-400"/> <strong>5 segundos</strong> por respuesta.</p>
-                        <p className="flex items-center gap-2"><Icons.AlertTriangle size={16} className="text-amber-400"/> Si fallas, <strong>retrocedes</strong> un nivel.</p>
-                        <p className="flex items-center gap-2"><Icons.CheckCircle2 size={16} className="text-green-400"/> Completa del x1 al x10 para pasar de tabla.</p>
-                    </div>
-
-
-                    <button onClick={startGame} className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all flex justify-center items-center gap-2 text-lg shadow-lg shadow-blue-900/20">
-                        <Icons.Play fill="currentColor" /> Iniciar Reto
-                    </button>
-                    </div>
-                </div>
-                );
+            const nextBtn = document.getElementById('nextPhaseBtn');
+            if (nextPhase === 5) {
+                nextBtn.textContent = '🌀 ¡Enfrentarme a la Peonza Diabólica!';
+                nextBtn.className = "w-full btn-3d bg-gradient-to-r from-red-600 to-purple-700 text-white font-bold text-xl py-4 px-6 rounded-2xl";
+            } else {
+                nextBtn.textContent = `Continuar a la Fase ${nextPhase} ➡️`;
+                nextBtn.className = "w-full btn-3d bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-xl py-4 px-6 rounded-2xl";
             }
 
+            showScreen('screen-celebration');
+        }
 
-            return (
-                <div className="min-h-screen bg-slate-950 text-white font-sans flex flex-col md:flex-row overflow-hidden">
-                
-                {/* Left Sidebar: Current Table Ladder */}
-                <div className="w-full md:w-24 p-2 md:h-screen shrink-0 order-2 md:order-1">
-                    <ProgressBarVertical />
-                </div>
+        function goToNextPhase() {
+            startPhase(state.phase + 1);
+        }
 
+        /**
+         * NOTIFICACIÓN DE LOGRO AL COMPLETAR UNA TABLA Y PASAR A LA SIGUIENTE
+         */
+        function showTableClearBanner(completedTable, nextTable) {
+            // Detenemos el reloj mientras celebra el cambio de tabla
+            stopTimer();
 
-                {/* Main Game Area */}
-                <div className="flex-1 flex flex-col p-4 relative order-1 md:order-2">
-                    
-                    {/* Top Bar info */}
-                    <div className="flex justify-between items-center mb-4 md:mb-8">
-                    <div className="text-2xl font-black tracking-tighter text-slate-500">
-                        TABLA DEL <span className="text-blue-500 text-4xl">{currentTable}</span>
-                    </div>
-                    <div className="text-sm font-mono bg-slate-900 px-3 py-1 rounded border border-slate-800">
-                        NIVEL: <span className="text-white font-bold">{currentTable}.{currentStep}</span>
-                    </div>
-                    </div>
+            // Sonido ascendente de nivel superado
+            playTone(523.25, 'triangle', 0.1, 0);
+            playTone(659.25, 'triangle', 0.1, 0.09);
+            playTone(783.99, 'triangle', 0.12, 0.18);
+            playTone(1046.50, 'triangle', 0.25, 0.28);
 
+            // Animamos el icono del modal con un salto de celebración
+            const modalIcon = document.getElementById('modalIcon');
+            modalIcon.classList.add('animate-dance');
 
-                    {/* Timer Bar */}
-                    <div className="w-full h-2 bg-slate-800 rounded-full mb-6 overflow-hidden">
-                    <div 
-                        className={`h-full transition-all duration-100 ease-linear ${timer < 2 ? 'bg-red-500 shadow-[0_0_10px_red]' : 'bg-blue-500 shadow-[0_0_10px_blue]'}`}
-                        style={{ width: `${(timer / 5) * 100}%` }}
-                    />
-                    </div>
-
-
-                    {/* Content Container */}
-                    <div className="flex-1 flex flex-col items-center justify-center relative max-w-2xl mx-auto w-full">
-                    
-                    {gameState === 'table_completed' ? (
-                        <div className="bg-emerald-900/20 border border-emerald-500/50 p-8 rounded-2xl text-center w-full animate-in zoom-in duration-300">
-                        <Icons.Award size={64} className="mx-auto text-emerald-400 mb-4" />
-                        <h2 className="text-3xl font-bold text-white mb-2">¡Tabla del {currentTable} Dominada!</h2>
-                        <p className="text-emerald-400 mb-8">Excelente trabajo. Prepárate para la siguiente.</p>
-                        <button 
-                            onClick={nextTable}
-                            className="bg-emerald-500 hover:bg-emerald-400 text-black font-bold py-4 px-12 rounded-xl text-xl transition-all flex items-center gap-2 mx-auto shadow-[0_0_20px_rgba(16,185,129,0.4)]"
-                        >
-                            Siguiente Tabla <Icons.ChevronRight />
-                        </button>
-                        </div>
-                    ) : (
-                        /* Question Card */
-                        <div className="w-full bg-slate-900 p-6 md:p-10 rounded-3xl border border-slate-800 shadow-2xl relative overflow-hidden">
-                        
-                        {/* Feedback Overlay */}
-                        {gameState === 'feedback' && (
-                            <div className="absolute inset-0 bg-slate-900/95 z-20 flex flex-col items-center justify-center animate-in fade-in duration-200">
-                            {feedback.type === 'correct' ? (
-                                <>
-                                <Icons.CheckCircle2 size={80} className="text-green-500 mb-4 animate-bounce" />
-                                <h2 className="text-4xl font-bold text-green-500">¡Correcto!</h2>
-                                </>
-                            ) : (
-                                <>
-                                <Icons.AlertTriangle size={80} className="text-red-500 mb-4 animate-pulse" />
-                                <h2 className="text-3xl font-bold text-red-500 mb-2">{feedback.type === 'timeout' ? '¡Tiempo Agotado!' : '¡Incorrecto!'}</h2>
-                                <p className="text-xl text-slate-400">
-                                    {currentTable} × {currentStep} = <span className="text-white font-bold text-2xl">{feedback.correctVal}</span>
-                                </p>
-                                <p className="mt-4 text-red-400 text-sm font-bold uppercase tracking-widest flex items-center gap-2">
-                                    Retrocedes un nivel
-                                </p>
-                                </>
-                            )}
-                            </div>
-                        )}
-
-
-                        {/* The Math Problem */}
-                        <div className="text-center mb-10">
-                            <div className="text-slate-500 text-sm font-bold uppercase tracking-widest mb-2">Calcula rápido</div>
-                            <div className="flex justify-center items-baseline gap-4 text-7xl md:text-8xl font-black text-white font-mono tracking-tighter">
-                                <span>{currentTable}</span>
-                                <span className="text-blue-500">×</span>
-                                <span>{currentStep}</span>
-                            </div>
-                            
-                            <div className="flex justify-center gap-1 mt-6 opacity-30">
-                                {Array.from({length: currentStep}).map((_, i) => (
-                                    <div key={i} className="w-2 h-8 bg-blue-400 rounded-full"></div>
-                                ))}
-                            </div>
-                        </div>
-
-
-                        {/* Options Grid (5 options) */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-                            {options.map((opt, i) => (
-                            <button
-                                key={i}
-                                onClick={() => handleAnswer(opt)}
-                                disabled={gameState !== 'playing'}
-                                className={`
-                                py-4 md:py-6 text-2xl md:text-3xl font-bold rounded-xl border-2 transition-all
-                                ${i === 4 ? 'col-span-2 md:col-span-1 md:col-start-2' : ''} 
-                                border-slate-700 bg-slate-800 text-slate-200 hover:border-blue-500 hover:bg-slate-700 hover:text-white hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]
-                                disabled:opacity-50 disabled:cursor-not-allowed
-                                `}
-                            >
-                                {opt}
-                            </button>
-                            ))}
-                        </div>
-                        </div>
-                    )}
-                    </div>
-                </div>
-
-
-                {/* Right Sidebar: Global Progress */}
-                <div className="w-full md:w-48 p-2 md:h-screen shrink-0 order-3 bg-slate-950">
-                    <TablesSidebar />
-                </div>
-
-
-                </div>
+            openModal(
+                '🏆',
+                `¡TABLA DEL ${completedTable} COMPLETADA!`,
+                `¡Toma ya! Has acertado las 10 seguidas de la tabla del ${completedTable}.\nTómate un respiro y prepárate para la tabla del ${nextTable}.`,
+                [{
+                    text: `¡A por la tabla del ${nextTable}! 🚀`,
+                    class: 'bg-emerald-500 hover:bg-emerald-600 text-white w-full text-lg py-3.5',
+                    action: () => {
+                        modalIcon.classList.remove('animate-dance');
+                        closeModal();
+                        prepareTableOrder();
+                        loadQuestion();
+                    }
+                }]
             );
         }
 
+        /**
+         * UTILIDADES DE INTERFAZ Y ALGORITMOS
+         */
+        function updateHeartsUI() {
+            const full = '❤️'.repeat(Math.max(0, state.lives));
+            const empty = '🖤'.repeat(Math.max(0, 3 - state.lives));
+            document.getElementById('heartsDisplay').textContent = full + empty;
+        }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function openModal(icon, title, message, buttons) {
+            document.getElementById('modalIcon').textContent = icon;
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').innerText = message;
+
+            const btnContainer = document.getElementById('modalButtons');
+            btnContainer.innerHTML = '';
+            buttons.forEach(b => {
+                const btn = document.createElement('button');
+                btn.className = `btn-3d font-bold py-3 px-5 rounded-xl text-base ${b.class}`;
+                btn.textContent = b.text;
+                btn.onclick = b.action;
+                btnContainer.appendChild(btn);
+            });
+
+            document.getElementById('customModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').classList.add('hidden');
+        }
     </script>
 </body>
 </html>
